@@ -43,7 +43,7 @@ main{display:flex;height:calc(100vh - 90px);overflow:hidden}
 .cpanel{flex:1;display:flex;flex-direction:column;background:var(--white);border-right:1px solid var(--vb);position:relative;overflow:hidden}
 .cpanel.hidden{display:none}
 canvas{flex:1;display:block}
-.side{width:480px;display:flex;flex-direction:column;background:var(--white);overflow-y:auto}
+.side{width:420px;display:flex;flex-direction:column;background:var(--white);overflow-y:auto}
 .side.fullwidth{width:100%}
 
 /* DEFINITION BOX — matches beamer block */
@@ -450,105 +450,137 @@ function dPost(){
   ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);grid(60,'#f4f3ff');
   if(st.ps===0){
     dPBase(W,H,45,t);
-    ctx.fillStyle='rgba(248,247,255,0.95)';ctx.fillRect(10,10,W-20,134);ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(10,10,W-20,134);
-    const ls=['"Si una transversal corta dos rectas',' y los ángulos interiores de un lado',' suman menos de 180°,',' entonces las rectas se cortan',' de ese mismo lado."','','— Euclides, Elementos (~300 a.C.)'];
-    ctx.font='15px Segoe UI';ctx.fillStyle=V1;ls.forEach((l,i)=>ctx.fillText(l,20,33+i*16));
+    // Overlay text box at top
+    ctx.fillStyle='rgba(248,247,255,0.96)';ctx.fillRect(10,8,W-20,128);ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(10,8,W-20,128);
+    const ls=['"Si una transversal corta dos rectas',' y los ángulos alternos internos',' son iguales (α = β),',' entonces las rectas son paralelas."','','— V Postulado de Euclides (~300 a.C.)'];
+    ctx.font='13px Segoe UI';ctx.fillStyle=V1;ls.forEach((l,i)=>ctx.fillText(l,20,30+i*17));
   }else if(st.ps===1){
     dParalelas(W,H,t);ctx.font='bold 15px Segoe UI';ctx.fillStyle=GR;ctx.fillText('Rectas paralelas — ángulos interiores suman 180°',14,22);
   }else if(st.ps===2){
     dConverge(W,H,t);ctx.font='bold 15px Segoe UI';ctx.fillStyle=RE;ctx.fillText('Rectas convergentes — suma < 180°, se cortan',14,22);
   }else{
     dPBase(W,H,ang,t);
-    ctx.font='bold 15px Segoe UI';ctx.fillStyle=ang===90?GR:RE;
-    ctx.fillText(`α = ${ang}°   β = ${180-ang}°   → ${ang===90?'PARALELAS':'SE CORTAN'}`,14,22);
+    // label at top
+    ctx.fillStyle='rgba(248,247,255,0.93)';ctx.fillRect(8,6,W-16,32);
+    ctx.font='bold 14px Segoe UI';ctx.fillStyle=ang===90?GR:RE;
+    ctx.fillText(`α = ${ang}°   β = ${180-ang}°   α + β = 180°   → ${ang===90?'PARALELAS':'SE CORTAN'}`,14,26);
   }
-  ctx.fillStyle='rgba(238,237,254,0.9)';ctx.fillRect(8,H-42,W-16,34);ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(8,H-42,W-16,34);
-  ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText('🎓 Para el docente: el V Postulado fue objeto de debate por ~2000 años.',14,H-26);ctx.fillText('   Su negación da origen a geometrías no euclidianas (Lobachevski, Riemann).',14,H-12);
+  ctx.fillStyle='rgba(238,237,254,0.9)';ctx.fillRect(8,H-46,W-16,38);ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(8,H-46,W-16,38);
+  ctx.font='12px Segoe UI';ctx.fillStyle=V1;
+  ctx.fillText('🎓 El V Postulado fue debatido por ~2000 años. Su negación origina geometrías no euclidianas.',14,H-28);
+  ctx.fillText('   Lobachevski (hiperbólica) y Riemann (esférica) son las más conocidas.',14,H-12);
 }
 function dPBase(W,H,ang,t){
-  // Two horizontal parallel lines at fixed y positions
-  const cy1 = H * 0.32;
-  const cy2 = H * 0.68;
+  // ── Posiciones fijas ─────────────────────────────────────────────
+  const cy1 = H * 0.28;            // recta r1
+  const cy2 = H * 0.72;            // recta r2
+  const dy   = cy2 - cy1;          // separación vertical
   const rad  = ang * Math.PI / 180;
 
-  // Draw line r1 (full width)
-  ctx.strokeStyle = V2; ctx.lineWidth = 2.5; ctx.setLineDash([]);
-  ctx.beginPath(); ctx.moveTo(0, cy1); ctx.lineTo(W, cy1); ctx.stroke();
-  // Draw line r2 (full width)
-  ctx.beginPath(); ctx.moveTo(0, cy2); ctx.lineTo(W, cy2); ctx.stroke();
+  // Intersección de t con r1 fija al 38% del ancho
+  const ix1  = W * 0.38;
+  // La transversal baja con pendiente tan(rad) → desplazamiento horizontal
+  const dxT  = dy / Math.tan(rad); // puede ser negativo si ang>90 (no ocurre con slider 5-85)
+  const ix2  = ix1 + dxT;          // intersección con r2
 
-  // Arrows on both ends of each line
-  const aw = 10;
-  [cy1, cy2].forEach(cy => {
-    ctx.fillStyle = V2;
-    ctx.beginPath(); ctx.moveTo(W, cy); ctx.lineTo(W-aw, cy-5); ctx.lineTo(W-aw, cy+5); ctx.closePath(); ctx.fill();
-    ctx.beginPath(); ctx.moveTo(0,  cy); ctx.lineTo(aw,   cy-5); ctx.lineTo(aw,   cy+5); ctx.closePath(); ctx.fill();
+  // Puntos de extensión de la transversal (50px más allá de cada recta)
+  const extY = 50;
+  const extX = extY / Math.tan(rad);
+  const tx0  = ix1 - extX;  const ty0 = cy1 - extY;   // extremo superior
+  const tx1  = ix2 + extX;  const ty1 = cy2 + extY;   // extremo inferior
+
+  // ── Fondo ────────────────────────────────────────────────────────
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#fafafe'; ctx.fillRect(0,0,W,H);
+  grid(60,'#f0f0fc');
+
+  // ── r1 y r2 (ancho completo) ─────────────────────────────────────
+  ctx.strokeStyle=V2; ctx.lineWidth=2.5; ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(0,cy1); ctx.lineTo(W,cy1); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,cy2); ctx.lineTo(W,cy2); ctx.stroke();
+
+  // Flechas en ambos extremos
+  [cy1,cy2].forEach(cy=>{
+    ctx.fillStyle=V2;
+    ctx.beginPath(); ctx.moveTo(W,cy); ctx.lineTo(W-10,cy-5); ctx.lineTo(W-10,cy+5); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(10,cy-5);   ctx.lineTo(10,cy+5);   ctx.closePath(); ctx.fill();
   });
 
-  // Fixed intersection on r1 at x = W*0.38
-  const ix1 = W * 0.38;
-  // Transversal direction: going from upper-left to lower-right
-  // angle α is measured at ix1 between r1 (going right) and transversal (going down-right)
-  // so transversal slope = tan(rad)  →  dy/dx = tan(rad)
-  const dx_per_dy = 1 / Math.tan(rad);           // horizontal shift per vertical unit
-  const dy        = cy2 - cy1;                    // vertical gap between lines
-  const ix2       = ix1 + dy * dx_per_dy;         // intersection on r2
+  // ── Transversal ──────────────────────────────────────────────────
+  ctx.strokeStyle=V1; ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.moveTo(tx0,ty0); ctx.lineTo(tx1,ty1); ctx.stroke();
+  dot(ix1,cy1,5,V1);
+  dot(ix2,cy2,5,V1);
 
-  // Extend transversal beyond both lines for clarity
-  const extend = 40;
-  const tx0 = ix1 - extend * dx_per_dy;
-  const ty0 = cy1 - extend;
-  const tx1 = ix2 + extend * dx_per_dy;
-  const ty1 = cy2 + extend;
+  // ── Ángulos co-interiores (V Postulado) ──────────────────────────
+  // α en ix1: debajo de r1, a la DERECHA de t
+  //   arco: 0 → rad (sentido horario)
+  //
+  // β en ix2: encima de r2, a la DERECHA de t  ← mismo lado que α
+  //   β = 180° - α  (suplemento)
+  //   arco: desde 0 (horizontal→derecha) hasta π-rad, sentido antihorario
+  //   es decir: arc(ix2, cy2, arcR, 0, -(Math.PI - rad), true)  → arriba-derecha
 
-  ctx.strokeStyle = V1; ctx.lineWidth = 2.5;
-  ctx.beginPath(); ctx.moveTo(tx0, ty0); ctx.lineTo(tx1, ty1); ctx.stroke();
+  const arcR = Math.min(40, dy * 0.20);
 
-  // Intersection dots
-  dot(ix1, cy1, 5, V1);
-  dot(ix2, cy2, 5, V1);
-
-  // ── Angle arcs ──────────────────────────────────────────────────
-  // The transversal goes from upper-left to lower-right.
-  // Its direction angle (measured from positive x-axis) = rad  (e.g. 30° → goes 30° below horizontal)
-  const tDir = rad; // direction of transversal going right-downward
-
-  const arcR = Math.min(32, dy * 0.22);
-
-  // α at ix1 (upper intersection):
-  // Interior angle is BELOW r1, on the RIGHT side of the transversal.
-  // Arc from transversal direction (tDir) to horizontal right (0), going counter-clockwise.
-  ctx.strokeStyle = RE; ctx.lineWidth = 1.8;
+  // α — debajo de r1, derecha de t (rojo)
+  ctx.fillStyle = RE + '33';
   ctx.beginPath();
-  ctx.arc(ix1, cy1, arcR, 0, tDir);   // 0 → tDir  (clockwise = interior right-below)
+  ctx.moveTo(ix1, cy1);
+  ctx.arc(ix1, cy1, arcR, 0, rad, false);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = RE; ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.arc(ix1, cy1, arcR, 0, rad, false);
   ctx.stroke();
 
-  // β at ix2 (lower intersection):
-  // Interior angle is ABOVE r2, on the LEFT side of the transversal.
-  // Supplementary: β = 180° - α
-  // Arc from π (horizontal left) to π - tDir going clockwise → or equivalently:
+  // β — encima de r2, derecha de t (verde), β = π - rad
+  ctx.fillStyle = GR + '33';
   ctx.beginPath();
-  ctx.arc(ix2, cy2, arcR, Math.PI - tDir, Math.PI, false); // left side, above r2
+  ctx.moveTo(ix2, cy2);
+  ctx.arc(ix2, cy2, arcR, -(Math.PI - rad), 0, false);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = GR; ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.arc(ix2, cy2, arcR, -(Math.PI - rad), 0, false);
   ctx.stroke();
 
-  // Labels — anchored safely inside canvas
-  ctx.font = 'bold 15px Segoe UI'; ctx.fillStyle = RE;
-  // α label: right of arc, below r1
-  ctx.fillText(`α = ${ang}°`,  ix1 + arcR + 6, cy1 + arcR * 0.7 + 4);
-  // β label: left of arc, above r2
-  ctx.fillText(`β = ${180 - ang}°`, Math.max(6, ix2 - arcR - 80), cy2 - arcR * 0.5 - 6);
+  // ── Etiquetas ─────────────────────────────────────────────────────
+  ctx.font = 'bold 15px Segoe UI';
 
-  // Sum annotation
-  const sum = ang + (180 - ang);
-  const sumColor = ang === 90 ? GR : (ang < 90 ? RE : MU);
-  ctx.font = '13px Segoe UI'; ctx.fillStyle = sumColor;
-  ctx.fillText(`α + β = ${ang}° + ${180 - ang}° = ${sum}°`, ix1 - 20, (cy1 + cy2) / 2 + 5);
+  // α: derecha del arco, debajo de r1
+  ctx.fillStyle = RE;
+  ctx.fillText(`α = ${ang}°`,
+    Math.min(ix1 + arcR + 8, W - 85),
+    cy1 + arcR * 0.65 + 6);
 
-  // Line labels
-  ctx.font = '14px Segoe UI'; ctx.fillStyle = V2;
-  ctx.fillText('r₁', W - 24, cy1 - 10);
-  ctx.fillText('r₂', W - 24, cy2 - 10);
-  ctx.fillText('t',  Math.min(tx0 + 8, ix1 - 16), ty0 + 16);
+  // β: derecha del arco, encima de r2
+  ctx.fillStyle = GR;
+  ctx.fillText(`β = ${180 - ang}°`,
+    Math.min(ix2 + arcR + 8, W - 85),
+    cy2 - arcR * 0.65 - 8);
+
+  // ── Suma central ──────────────────────────────────────────────────
+  const midY = (cy1 + cy2) / 2;
+  ctx.font = 'bold 13px Segoe UI';
+  ctx.fillStyle = ang === 90 ? GR : RE;
+  ctx.fillText(`α + β = ${ang}° + ${180 - ang}° = 180°`, (ix1 + ix2) / 2 - 60, midY + 6);
+
+  // ── Etiquetas de rectas y transversal ─────────────────────────────
+  ctx.font = 'bold 14px Segoe UI'; ctx.fillStyle = V2;
+  ctx.fillText('r₁', W - 26, cy1 - 10);
+  ctx.fillText('r₂', W - 26, cy2 - 10);
+  ctx.fillStyle = V1;
+  ctx.fillText('t', Math.max(tx0 + 4, 4), Math.max(ty0 + 18, 16));
+
+  // ── Nota didáctica ────────────────────────────────────────────────
+  ctx.fillStyle = 'rgba(238,237,254,0.93)';
+  ctx.fillRect(8, H - 52, W - 16, 44);
+  ctx.strokeStyle = VB; ctx.lineWidth = 1;
+  ctx.strokeRect(8, H - 52, W - 16, 44);
+  ctx.font = '12px Segoe UI'; ctx.fillStyle = V1;
+  ctx.fillText('🎓 α y β son ángulos co-interiores (mismo lado de t): α + β = 180° cuando r₁ ∥ r₂.', 14, H - 34);
+  ctx.fillText('   V Postulado: si α + β < 180°, las rectas se cortan de ese lado.', 14, H - 16);
 }
 function dParalelas(W,H,t){
   const cy1=H*0.35,cy2=H*0.68,tx=W*0.4;
