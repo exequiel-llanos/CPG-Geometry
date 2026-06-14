@@ -438,7 +438,7 @@ function updAng(){
   const a=parseInt(document.getElementById('angr')?.value||30);
   const el=document.getElementById('anginfo');if(!el)return;
   const par=a===90;
-  el.innerHTML=`<b>α = ${a}°, β = ${180-a}°</b><br>Suma = <b>180°</b> → rectas <b>${par?'paralelas':'se cortan'}</b>`;
+  el.innerHTML=`<b>α = ${a}°, β = ${180-a}°</b>`;
   el.className='pbox '+(par?'gl':'gr');
 }
 function dPost(){
