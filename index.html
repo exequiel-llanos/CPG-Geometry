@@ -26,15 +26,15 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--light);color:var(-
 header{background:var(--v1);color:#fff;border-bottom:2px solid var(--vb)}
 .htop{display:flex;align-items:center;justify-content:space-between;padding:11px 22px}
 .hinst{display:flex;align-items:center;gap:11px}
-.hbadge{width:34px;height:34px;background:var(--vb);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:var(--v1);flex-shrink:0}
-.hinst h1{font-size:14px;font-weight:700;line-height:1.25;color:#fff}
-.hinst p{font-size:10px;color:#c0bcf0;margin-top:1px}
-.hmeta{text-align:right;font-size:10px;color:#c0bcf0;line-height:1.7}
-.badge-cpc{background:var(--v2);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.04em}
+.hbadge{width:34px;height:34px;background:var(--vb);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:var(--v1);flex-shrink:0}
+.hinst h1{font-size:17px;font-weight:700;line-height:1.25;color:#fff}
+.hinst p{font-size:16px;color:#c0bcf0;margin-top:1px}
+.hmeta{text-align:right;font-size:16px;color:#c0bcf0;line-height:1.7}
+.badge-cpc{background:var(--v2);color:#fff;font-size:15px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.04em}
 
 /* TABS */
 .tabs{display:flex;background:var(--v2);padding:0 22px;overflow-x:auto}
-.tab{padding:9px 15px;font-size:11px;font-weight:600;color:#c0bcf0;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;letter-spacing:.03em;transition:all .2s}
+.tab{padding:12px 16px;font-size:17px;font-weight:600;color:#c0bcf0;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;letter-spacing:.03em;transition:all .2s}
 .tab:hover{color:#fff}
 .tab.active{color:#fff;border-bottom:2px solid #fff}
 
@@ -42,19 +42,19 @@ header{background:var(--v1);color:#fff;border-bottom:2px solid var(--vb)}
 main{display:flex;height:calc(100vh - 90px);overflow:hidden}
 .cpanel{flex:1;display:flex;flex-direction:column;background:var(--white);border-right:1px solid var(--vb);position:relative;overflow:hidden}
 canvas{flex:1;display:block}
-.side{width:290px;display:flex;flex-direction:column;background:var(--white);overflow-y:auto}
+.side{width:320px;display:flex;flex-direction:column;background:var(--white);overflow-y:auto}
 
 /* DEFINITION BOX — matches beamer block */
-.dbox{background:var(--v1);color:#fff;padding:12px 15px}
-.dlbl{font-size:9px;font-weight:700;color:var(--vb);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
-.dbox h3{font-size:13px;font-weight:700;margin-bottom:5px}
-.dbox p{font-size:11px;color:#d8d4f8;line-height:1.65}
+.dbox{background:var(--v1);color:#fff;padding:14px 16px}
+.dlbl{font-size:15px;font-weight:700;color:var(--vb);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.dbox h3{font-size:16px;font-weight:700;margin-bottom:5px}
+.dbox p{font-size:17px;color:#d8d4f8;line-height:1.65}
 .dbox em{color:#fff;font-style:normal;font-weight:600}
 
 /* BLOCKS matching beamer */
 .blk{border-radius:0;margin-bottom:7px}
-.blk .bt{font-size:9px;font-weight:700;padding:3px 9px;background:var(--v2);color:#fff;font-family:'Segoe UI',Arial,sans-serif}
-.blk .bb{font-size:10px;padding:7px 9px;line-height:1.6;background:var(--vl);color:var(--text);border:1px solid var(--vb);border-top:none}
+.blk .bt{font-size:15px;font-weight:700;padding:4px 10px;background:var(--v2);color:#fff;font-family:'Segoe UI',Arial,sans-serif}
+.blk .bb{font-size:16px;padding:7px 9px;line-height:1.6;background:var(--vl);color:var(--text);border:1px solid var(--vb);border-top:none}
 .blk.alert .bt{background:var(--red)}
 .blk.alert .bb{background:#fff0f0;border-color:#e0a0a0}
 .blk.example .bt{background:var(--green)}
@@ -63,20 +63,20 @@ canvas{flex:1;display:block}
 .blk.warn .bb{background:#fffbf0;border-color:#e0cc80}
 
 /* SECTION LABEL */
-.slbl{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:11px 13px 4px}
+.slbl{font-size:15px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:11px 13px 4px}
 
 /* CONTROLS */
-.cwrap{padding:0 13px 12px}
+.cwrap{padding:0 14px 14px}
 .brow{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
-.btn{padding:5px 10px;font-size:11px;border:1px solid var(--vb);border-radius:3px;background:var(--white);color:var(--sub);cursor:pointer;font-weight:600;transition:all .15s;white-space:nowrap}
+.btn{padding:5px 10px;font-size:17px;border:1px solid var(--vb);border-radius:3px;background:var(--white);color:var(--sub);cursor:pointer;font-weight:600;transition:all .15s;white-space:nowrap}
 .btn:hover{border-color:var(--v2);color:var(--v2)}
 .btn.on{background:var(--v2);color:#fff;border-color:var(--v2)}
-.btn.sm{padding:4px 8px;font-size:10px}
+.btn.sm{padding:4px 8px;font-size:16px}
 .btn.clr{border-color:#ccc;color:#999}.btn.clr:hover{background:#eee}
-label{font-size:10px;color:var(--sub);display:block;margin-bottom:3px}
+label{font-size:16px;color:var(--sub);display:block;margin-bottom:3px}
 input[type=range]{width:100%;accent-color:var(--v2);margin-bottom:9px}
-.vv{font-size:10px;color:var(--v2);font-weight:700}
-.pbox{background:var(--vl);border:1px solid var(--vb);border-left:3px solid var(--v2);border-radius:2px;padding:8px 10px;margin-bottom:7px;font-size:11px;color:var(--sub);line-height:1.7}
+.vv{font-size:16px;color:var(--v2);font-weight:700}
+.pbox{background:var(--vl);border:1px solid var(--vb);border-left:3px solid var(--v2);border-radius:2px;padding:10px 12px;margin-bottom:7px;font-size:17px;color:var(--sub);line-height:1.7}
 .pbox b{color:var(--v1)}
 .pbox.gl{border-left-color:var(--green)}
 .pbox.gr{border-left-color:var(--red)}
@@ -85,36 +85,36 @@ input[type=range]{width:100%;accent-color:var(--v2);margin-bottom:9px}
 
 /* CPC LAYER */
 .cpc-toggle{display:flex;align-items:center;gap:7px;padding:8px 13px;cursor:pointer;background:var(--vl);border-bottom:1px solid var(--vb)}
-.cpc-toggle span{font-size:10px;font-weight:700;color:var(--v2);letter-spacing:.04em}
-.cpc-toggle .pill{font-size:8px;background:var(--v2);color:#fff;padding:1px 7px;border-radius:10px}
+.cpc-toggle span{font-size:16px;font-weight:700;color:var(--v2);letter-spacing:.04em}
+.cpc-toggle .pill{font-size:11px;background:var(--v2);color:#fff;padding:1px 7px;border-radius:10px}
 .cpc-panel{display:none;background:var(--vl);border-bottom:1px solid var(--vb);padding:10px 13px}
 .cpc-panel.open{display:block}
-.cpc-q{font-size:11px;color:var(--text);line-height:1.6;margin-bottom:6px;padding-left:10px;border-left:2px solid var(--v3)}
+.cpc-q{font-size:17px;color:var(--text);line-height:1.6;margin-bottom:6px;padding-left:10px;border-left:2px solid var(--v3)}
 
 /* QUIZ */
 .qwrap{padding:13px}
 .pbar{height:3px;background:var(--vb);border-radius:2px;margin-bottom:11px}
 .pfill{height:3px;background:var(--v2);border-radius:2px;transition:width .4s}
-.qq{font-size:12px;color:var(--text);line-height:1.6;margin-bottom:9px;font-weight:600}
+.qq{font-size:15px;color:var(--text);line-height:1.6;margin-bottom:9px;font-weight:600}
 .qopts{display:flex;flex-direction:column;gap:5px}
-.qopt{padding:7px 10px;border:1px solid var(--vb);border-radius:3px;font-size:11px;cursor:pointer;transition:all .15s;background:var(--white);color:var(--text);text-align:left}
+.qopt{padding:9px 12px;border:1px solid var(--vb);border-radius:3px;font-size:17px;cursor:pointer;transition:all .15s;background:var(--white);color:var(--text);text-align:left}
 .qopt:hover{border-color:var(--v2);background:var(--vl)}
 .qopt.ok{background:#eaf4ee;border-color:var(--green);color:var(--green)}
 .qopt.no{background:#f8eaea;border-color:var(--red);color:var(--red)}
-.qfb{font-size:11px;margin-top:7px;padding:7px 10px;border-radius:3px;line-height:1.55}
+.qfb{font-size:17px;margin-top:7px;padding:9px 12px;border-radius:3px;line-height:1.55}
 .qfb.ok{background:#eaf4ee;color:var(--green);border:1px solid #8acc9a}
 .qfb.no{background:#f8eaea;color:var(--red);border:1px solid #d08080}
 .qnx{margin-top:7px;width:100%}
 .sbox{text-align:center;padding:22px 13px}
-.sbox .big{font-size:40px;font-weight:700;color:var(--v1)}
-.sbox .pct{font-size:13px;color:var(--v2);font-weight:700;margin-top:4px}
-.sbox p{font-size:11px;color:var(--sub);margin-top:7px;line-height:1.6}
+.sbox .big{font-size:48px;font-weight:700;color:var(--v1)}
+.sbox .pct{font-size:16px;color:var(--v2);font-weight:700;margin-top:4px}
+.sbox p{font-size:17px;color:var(--sub);margin-top:7px;line-height:1.6}
 
 /* POSTULADO steps */
-.stbox{background:var(--vl);border:1px solid var(--vb);border-radius:3px;padding:8px 10px;margin-bottom:6px;font-size:11px;color:var(--sub);line-height:1.6;cursor:pointer;transition:border-color .2s}
+.stbox{background:var(--vl);border:1px solid var(--vb);border-radius:3px;padding:10px 12px;margin-bottom:6px;font-size:17px;color:var(--sub);line-height:1.6;cursor:pointer;transition:border-color .2s}
 .stbox:hover{border-color:var(--v2)}
 .stbox.ast{border-left:3px solid var(--v2);background:#eeedfe}
-.stbox b{color:var(--v1);display:block;margin-bottom:2px;font-size:11px}
+.stbox b{color:var(--v1);display:block;margin-bottom:2px;font-size:17px}
 </style>
 </head>
 <body>
@@ -196,9 +196,9 @@ function bPunto(){
       <button class="btn on" id="bpa" onclick="tAnim('pu')">⏸ Animación</button>
       <button class="btn clr sm" onclick="st.pts=[];draw()">✕ Limpiar</button>
     </div>
-    <label>Radio visual <span class="vv" id="szv">6</span> px &nbsp;<span style="font-size:9px;color:var(--muted)">(tamaño real = 0)</span></label>
+    <label>Radio visual <span class="vv" id="szv">6</span> px &nbsp;<span style="font-size:15px;color:var(--muted)">(tamaño real = 0)</span></label>
     <input type="range" id="szr" min="2" max="18" value="6" oninput="document.getElementById('szv').textContent=this.value;if(!st.an)dPunto()">
-    <p style="font-size:10px;color:var(--sub);margin-bottom:7px">Haz clic en el lienzo para registrar puntos y ver sus coordenadas.</p>
+    <p style="font-size:16px;color:var(--sub);margin-bottom:7px">Haz clic en el lienzo para registrar puntos y ver sus coordenadas.</p>
     <div class="pbox" id="ptinfo"><b>Sin puntos aún.</b><br>Haz clic en el lienzo.</div>
   </div>
   <div class="div"></div>
@@ -217,17 +217,17 @@ function dPunto(){
   ctx.strokeStyle='#d0ccf0';ctx.lineWidth=1;
   ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();
   ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();
-  ctx.font='10px Segoe UI';ctx.fillStyle=MU;ctx.fillText('x',W-13,H/2-6);ctx.fillText('y',W/2+6,13);
+  ctx.font='13px Segoe UI';ctx.fillStyle=MU;ctx.fillText('x',W-13,H/2-6);ctx.fillText('y',W/2+6,13);
   const sz=parseInt(document.getElementById('szr')?.value||6);
   const pulse=st.an?(sz+3*Math.sin(t*2)):sz;
   dot(W/2,H/2,pulse,V2);
   if(st.an){ctx.beginPath();ctx.arc(W/2,H/2,pulse+5+4*Math.abs(Math.sin(t)),0,Math.PI*2);ctx.strokeStyle=V2+'40';ctx.lineWidth=1.5;ctx.stroke();}
-  ctx.font='bold 10px Segoe UI';ctx.fillStyle=V1;ctx.fillText('O(0,0)',W/2+pulse+4,H/2-4);
-  (st.pts||[]).forEach((p,i)=>{dot(p.x,p.y,sz,V1);ctx.font='10px Segoe UI';ctx.fillStyle=V1;ctx.fillText(`P${i+1}(${Math.round(p.x-W/2)},${Math.round(H/2-p.y)})`,p.x+sz+3,p.y-3);});
+  ctx.font='bold 15px Segoe UI';ctx.fillStyle=V1;ctx.fillText('O(0,0)',W/2+pulse+4,H/2-4);
+  (st.pts||[]).forEach((p,i)=>{dot(p.x,p.y,sz,V1);ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText(`P${i+1}(${Math.round(p.x-W/2)},${Math.round(H/2-p.y)})`,p.x+sz+3,p.y-3);});
   // didactic note
   ctx.fillStyle='rgba(238,237,254,0.9)';ctx.fillRect(8,H-42,W-16,34);
   ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(8,H-42,W-16,34);
-  ctx.font='10px Segoe UI';ctx.fillStyle=V1;
+  ctx.font='13px Segoe UI';ctx.fillStyle=V1;
   ctx.fillText('🎓 Para el docente: el tamaño visual del punto es una convención gráfica.',14,H-26);
   ctx.fillText('   El objeto geométrico no tiene extensión — solo posición.',14,H-12);
 }
@@ -284,28 +284,28 @@ function dLinea(){
   if(st.lt==='i'){
     ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(W,cy);ctx.stroke();arr(0,cy,-1);arr(W,cy,1);
     if(st.an){const dx=((t*70)%(W+40))-20;dot(dx,cy,5,V1);}
-    ctx.font='11px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Línea infinita — sin principio ni fin',12,cy-20);
+    ctx.font='14px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Línea infinita — sin principio ni fin',12,cy-20);
   }else if(st.lt==='s'){
     const ox=80;ctx.beginPath();ctx.moveTo(ox,cy);ctx.lineTo(W,cy);ctx.stroke();arr(W,cy,1);dot(ox,cy,5,V1);
-    ctx.font='bold 11px Segoe UI';ctx.fillStyle=V2;ctx.fillText('A',ox-4,cy-12);
+    ctx.font='bold 14px Segoe UI';ctx.fillStyle=V2;ctx.fillText('A',ox-4,cy-12);
     if(st.an){const dx=ox+((t*60)%(W-ox-20));dot(dx,cy,4,V3);}
-    ctx.font='11px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Rayo: origen A definido, extensión infinita →',12,cy-20);
+    ctx.font='14px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Rayo: origen A definido, extensión infinita →',12,cy-20);
   }else if(st.lt==='f'){
     const ax=W*0.2,bx=W*0.8;ctx.beginPath();ctx.moveTo(ax,cy);ctx.lineTo(bx,cy);ctx.stroke();
     dot(ax,cy,5,V1);dot(bx,cy,5,V1);
-    ctx.font='bold 11px Segoe UI';ctx.fillStyle=V2;ctx.fillText('A',ax-4,cy-12);ctx.fillText('B',bx-4,cy-12);
+    ctx.font='bold 14px Segoe UI';ctx.fillStyle=V2;ctx.fillText('A',ax-4,cy-12);ctx.fillText('B',bx-4,cy-12);
     const mx=(ax+bx)/2,r=st.an?(3+2*Math.sin(t*3)):3;dot(mx,cy,r,V2+'99');
     ctx.setLineDash([4,4]);ctx.strokeStyle='#bbb';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(ax,cy+22);ctx.lineTo(bx,cy+22);ctx.stroke();ctx.setLineDash([]);
-    ctx.font='10px Segoe UI';ctx.fillStyle=MU;ctx.fillText(`AB = ${Math.round(bx-ax)} px`,mx-24,cy+36);
+    ctx.font='13px Segoe UI';ctx.fillStyle=MU;ctx.fillText(`AB = ${Math.round(bx-ax)} px`,mx-24,cy+36);
     ctx.fillText('Segmento AB — extensión finita y medible',12,cy-20);
   }else{
     const cx=W/2,ry=H*0.26,rx=W*0.28;ctx.beginPath();ctx.ellipse(cx,H/2,rx,ry,0,0,Math.PI*2);ctx.stroke();
     if(st.an){const a=t*1.2;dot(cx+rx*Math.cos(a),H/2+ry*Math.sin(a),5,V1);}
-    ctx.font='11px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Curva cerrada — regresa a su punto de inicio',12,22);
+    ctx.font='14px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Curva cerrada — regresa a su punto de inicio',12,22);
   }
   ctx.fillStyle='rgba(238,237,254,0.9)';ctx.fillRect(8,H-42,W-16,34);
   ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(8,H-42,W-16,34);
-  ctx.font='10px Segoe UI';ctx.fillStyle=V1;ctx.fillText('🎓 Para el docente: identificar qué tipo de línea usa cada nivel del currículum',14,H-26);ctx.fillText('   ayuda a planificar la progresión conceptual adecuada.',14,H-12);
+  ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText('🎓 Para el docente: identificar qué tipo de línea usa cada nivel del currículum',14,H-26);ctx.fillText('   ayuda a planificar la progresión conceptual adecuada.',14,H-12);
 }
 
 /* ════════════════════════════════════════
@@ -353,8 +353,8 @@ function dPlano(){
     ctx.strokeStyle='#c0bcf0';ctx.lineWidth=1.2;
     ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();
     ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();
-    ctx.font='10px Segoe UI';ctx.fillStyle=MU;ctx.fillText('x',W-12,H/2-7);ctx.fillText('y',W/2+6,13);ctx.fillText('O',W/2+3,H/2-5);
-    if(st.an){const px=W/2+130*Math.cos(t),py=H/2+90*Math.sin(t*1.2);dot(px,py,5,V2);ctx.font='9px Segoe UI';ctx.fillStyle=V1;ctx.fillText(`(${Math.round(px-W/2)},${Math.round(H/2-py)})`,px+8,py-5);}
+    ctx.font='13px Segoe UI';ctx.fillStyle=MU;ctx.fillText('x',W-12,H/2-7);ctx.fillText('y',W/2+6,13);ctx.fillText('O',W/2+3,H/2-5);
+    if(st.an){const px=W/2+130*Math.cos(t),py=H/2+90*Math.sin(t*1.2);dot(px,py,5,V2);ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText(`(${Math.round(px-W/2)},${Math.round(H/2-py)})`,px+8,py-5);}
   }else if(st.pv==='3'){
     ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
     const vx=W/2,vy=H*0.3,base=H*0.85;
@@ -362,17 +362,17 @@ function dPlano(){
     const cols=14;for(let i=-cols;i<=cols;i++){const bx=W/2+i*(W/(cols*1.6));ctx.beginPath();ctx.moveTo(bx,base);ctx.lineTo(vx,vy);ctx.stroke();}
     for(let j=1;j<=9;j++){const rr=j/9,yy=vy+rr*(base-vy),hw=(W*0.65)*rr;ctx.beginPath();ctx.moveTo(vx-hw/2,yy);ctx.lineTo(vx+hw/2,yy);ctx.stroke();}
     ctx.fillStyle='rgba(200,195,240,0.18)';ctx.beginPath();ctx.moveTo(vx-W*0.32,base);ctx.lineTo(vx,vy);ctx.lineTo(vx+W*0.32,base);ctx.closePath();ctx.fill();
-    ctx.font='bold 13px Segoe UI';ctx.fillStyle=V1;ctx.fillText('Plano en perspectiva',vx-72,vy-16);
+    ctx.font='bold 15px Segoe UI';ctx.fillStyle=V1;ctx.fillText('Plano en perspectiva',vx-72,vy-16);
     if(st.an){const a=t*0.5,rr=W*0.22;dot(vx+rr*Math.cos(a)*0.8,vy+(base-vy)*0.5+rr*Math.sin(a)*0.25,4,V2);}
   }else{
     ctx.fillStyle='#fafafe';ctx.fillRect(0,0,W,H);grid(gd,'#eeedfe');
     ctx.strokeStyle='#c0bcf0';ctx.lineWidth=1;
     ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();
     ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();
-    (st.pp||[]).forEach((p,i)=>{dot(p.x,p.y,5,V2);ctx.font='9px Segoe UI';ctx.fillStyle=V1;ctx.fillText(`P${i+1}(${Math.round(p.x-W/2)},${Math.round(H/2-p.y)})`,p.x+7,p.y-4);});
+    (st.pp||[]).forEach((p,i)=>{dot(p.x,p.y,5,V2);ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText(`P${i+1}(${Math.round(p.x-W/2)},${Math.round(H/2-p.y)})`,p.x+7,p.y-4);});
   }
   ctx.fillStyle='rgba(238,237,254,0.9)';ctx.fillRect(8,H-42,W-16,34);ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(8,H-42,W-16,34);
-  ctx.font='10px Segoe UI';ctx.fillStyle=V1;ctx.fillText('🎓 Para el docente: distinguir entre el plano geométrico (abstracto, infinito)',14,H-26);ctx.fillText('   y superficies planas físicas es clave para evitar concepciones erróneas.',14,H-12);
+  ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText('🎓 Para el docente: distinguir entre el plano geométrico (abstracto, infinito)',14,H-26);ctx.fillText('   y superficies planas físicas es clave para evitar concepciones erróneas.',14,H-12);
 }
 
 /* ════════════════════════════════════════
@@ -429,18 +429,18 @@ function dPost(){
     dPBase(W,H,45,t);
     ctx.fillStyle='rgba(248,247,255,0.95)';ctx.fillRect(10,10,W-20,134);ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(10,10,W-20,134);
     const ls=['"Si una transversal corta dos rectas',' y los ángulos interiores de un lado',' suman menos de 180°,',' entonces las rectas se cortan',' de ese mismo lado."','','— Euclides, Elementos (~300 a.C.)'];
-    ctx.font='12px Segoe UI';ctx.fillStyle=V1;ls.forEach((l,i)=>ctx.fillText(l,20,33+i*16));
+    ctx.font='15px Segoe UI';ctx.fillStyle=V1;ls.forEach((l,i)=>ctx.fillText(l,20,33+i*16));
   }else if(st.ps===1){
-    dParalelas(W,H,t);ctx.font='bold 12px Segoe UI';ctx.fillStyle=GR;ctx.fillText('Rectas paralelas — ángulos interiores suman 180°',14,22);
+    dParalelas(W,H,t);ctx.font='bold 15px Segoe UI';ctx.fillStyle=GR;ctx.fillText('Rectas paralelas — ángulos interiores suman 180°',14,22);
   }else if(st.ps===2){
-    dConverge(W,H,t);ctx.font='bold 12px Segoe UI';ctx.fillStyle=RE;ctx.fillText('Rectas convergentes — suma < 180°, se cortan',14,22);
+    dConverge(W,H,t);ctx.font='bold 15px Segoe UI';ctx.fillStyle=RE;ctx.fillText('Rectas convergentes — suma < 180°, se cortan',14,22);
   }else{
     dPBase(W,H,ang,t);
-    ctx.font='bold 12px Segoe UI';ctx.fillStyle=ang===90?GR:RE;
+    ctx.font='bold 15px Segoe UI';ctx.fillStyle=ang===90?GR:RE;
     ctx.fillText(`α = ${ang}°   β = ${180-ang}°   → ${ang===90?'PARALELAS':'SE CORTAN'}`,14,22);
   }
   ctx.fillStyle='rgba(238,237,254,0.9)';ctx.fillRect(8,H-42,W-16,34);ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(8,H-42,W-16,34);
-  ctx.font='10px Segoe UI';ctx.fillStyle=V1;ctx.fillText('🎓 Para el docente: el V Postulado fue objeto de debate por ~2000 años.',14,H-26);ctx.fillText('   Su negación da origen a geometrías no euclidianas (Lobachevski, Riemann).',14,H-12);
+  ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText('🎓 Para el docente: el V Postulado fue objeto de debate por ~2000 años.',14,H-26);ctx.fillText('   Su negación da origen a geometrías no euclidianas (Lobachevski, Riemann).',14,H-12);
 }
 function dPBase(W,H,ang,t){
   const cy1=H*0.38,cy2=H*0.65,rad=ang*Math.PI/180,tx=W*0.25;
@@ -454,7 +454,7 @@ function dPBase(W,H,ang,t){
   ctx.strokeStyle=RE;ctx.lineWidth=1.5;
   ctx.beginPath();ctx.arc(ix1,cy1,22,Math.PI/2,Math.PI/2+rad);ctx.stroke();
   ctx.beginPath();ctx.arc(ix2,cy2,22,-Math.PI/2,-Math.PI/2+(Math.PI-rad));ctx.stroke();
-  ctx.font='bold 10px Segoe UI';ctx.fillStyle=RE;ctx.fillText(`α=${ang}°`,ix1+16,cy1+14);ctx.fillText(`β=${180-ang}°`,ix2+16,cy2-6);
+  ctx.font='bold 15px Segoe UI';ctx.fillStyle=RE;ctx.fillText(`α=${ang}°`,ix1+16,cy1+14);ctx.fillText(`β=${180-ang}°`,ix2+16,cy2-6);
 }
 function dParalelas(W,H,t){
   const cy1=H*0.38,cy2=H*0.65,tx=W*0.3;
@@ -464,12 +464,12 @@ function dParalelas(W,H,t){
   ctx.strokeStyle=V1;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(tx,cy1-30);ctx.lineTo(tx,cy2+30);ctx.stroke();
   dot(tx,cy1,4,V1);dot(tx,cy2,4,V1);
   const s=14;ctx.strokeStyle=GR;ctx.lineWidth=1.5;ctx.strokeRect(tx,cy1,s,s);ctx.strokeRect(tx,cy2-s,s,s);
-  ctx.font='9px Segoe UI';ctx.fillStyle=GR;ctx.fillText('90°',tx+s+3,cy1+11);ctx.fillText('90°',tx+s+3,cy2-3);
+  ctx.font='13px Segoe UI';ctx.fillStyle=GR;ctx.fillText('90°',tx+s+3,cy1+11);ctx.fillText('90°',tx+s+3,cy2-3);
   const dx=st.an?((t*40)%180):90;
   ctx.strokeStyle=V2+'55';ctx.lineWidth=1;ctx.setLineDash([5,5]);
   ctx.beginPath();ctx.moveTo(W*0.6,cy1);ctx.lineTo(W*0.6+dx,cy1);ctx.stroke();
   ctx.beginPath();ctx.moveTo(W*0.6,cy2);ctx.lineTo(W*0.6+dx,cy2);ctx.stroke();ctx.setLineDash([]);
-  ctx.font='10px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Las rectas nunca se cortan → son paralelas',W*0.6+8,(cy1+cy2)/2);
+  ctx.font='13px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Las rectas nunca se cortan → son paralelas',W*0.6+8,(cy1+cy2)/2);
 }
 function dConverge(W,H,t){
   const ix=W*0.82,iy=H/2;
@@ -477,7 +477,7 @@ function dConverge(W,H,t){
   ctx.beginPath();ctx.moveTo(0,H*0.38);ctx.lineTo(ix,iy);ctx.stroke();
   ctx.beginPath();ctx.moveTo(0,H*0.65);ctx.lineTo(ix,iy);ctx.stroke();
   const pulse=st.an?(5+3*Math.sin(t*3)):5;dot(ix,iy,pulse,RE);
-  ctx.font='bold 10px Segoe UI';ctx.fillStyle=RE;ctx.fillText('Punto de intersección',ix-78,iy-13);
+  ctx.font='bold 15px Segoe UI';ctx.fillStyle=RE;ctx.fillText('Punto de intersección',ix-78,iy-13);
   ctx.strokeStyle=V1;ctx.lineWidth=2;const tx=W*0.28;ctx.beginPath();ctx.moveTo(tx-20,H*0.25);ctx.lineTo(tx+40,H*0.78);ctx.stroke();
 }
 
@@ -514,8 +514,8 @@ let qs={q:0,sc:0,dn:false};
 function bQuiz(){qs={q:0,sc:0,dn:false};rQ();}
 function dQcv(){
   const W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#fafafe';ctx.fillRect(0,0,W,H);grid(60,'#eeedfe');
-  ctx.font='bold 100px Segoe UI';ctx.fillStyle=V2+'0d';ctx.fillText('?',W/2-50,H/2+36);
-  ctx.font='12px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Evaluación con enfoque CPC — responde en el panel →',W/2-165,H/2+80);
+  ctx.font='bold 120px Segoe UI';ctx.fillStyle=V2+'0d';ctx.fillText('?',W/2-50,H/2+36);
+  ctx.font='15px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Evaluación con enfoque CPC — responde en el panel →',W/2-165,H/2+80);
 }
 function rQ(){
   const s=document.getElementById('side');
