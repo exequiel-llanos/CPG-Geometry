@@ -466,76 +466,89 @@ function dPost(){
   ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText('🎓 Para el docente: el V Postulado fue objeto de debate por ~2000 años.',14,H-26);ctx.fillText('   Su negación da origen a geometrías no euclidianas (Lobachevski, Riemann).',14,H-12);
 }
 function dPBase(W,H,ang,t){
-  // Two horizontal parallel lines, well-spaced
-  const cy1=H*0.35, cy2=H*0.68;
-  // Transversal: fixed crossing point at x=W*0.38 on line1, angled
-  const rad=ang*Math.PI/180;
-  const ix1=W*0.38; // intersection with line 1
-  // direction vector of transversal (going down-right for ang<90)
-  const dy=cy2-cy1;
-  const dx=dy/Math.tan(rad); // horizontal shift between the two intersections
-  const ix2=ix1+dx;          // intersection with line 2
+  // Two horizontal parallel lines at fixed y positions
+  const cy1 = H * 0.32;
+  const cy2 = H * 0.68;
+  const rad  = ang * Math.PI / 180;
 
-  // clip transversal to canvas safely
-  const slope=(cy2-cy1)/(ix2-ix1||0.001);
-  const tx0=0, ty0=cy1-slope*(ix1);
-  const tx1=W, ty1=ty0+slope*W;
+  // Draw line r1 (full width)
+  ctx.strokeStyle = V2; ctx.lineWidth = 2.5; ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(0, cy1); ctx.lineTo(W, cy1); ctx.stroke();
+  // Draw line r2 (full width)
+  ctx.beginPath(); ctx.moveTo(0, cy2); ctx.lineTo(W, cy2); ctx.stroke();
 
-  // Draw the two parallel lines (full width)
-  ctx.strokeStyle=V2;ctx.lineWidth=2.5;ctx.setLineDash([]);
-  ctx.beginPath();ctx.moveTo(0,cy1);ctx.lineTo(W,cy1);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(0,cy2);ctx.lineTo(W,cy2);ctx.stroke();
-  // arrows on right end
-  const aw=10;
-  [[cy1],[cy2]].forEach(([cy])=>{
-    ctx.fillStyle=V2;ctx.beginPath();ctx.moveTo(W,cy);ctx.lineTo(W-aw,cy-5);ctx.lineTo(W-aw,cy+5);ctx.closePath();ctx.fill();
-    ctx.fillStyle=V2;ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(aw,cy-5);ctx.lineTo(aw,cy+5);ctx.closePath();ctx.fill();
+  // Arrows on both ends of each line
+  const aw = 10;
+  [cy1, cy2].forEach(cy => {
+    ctx.fillStyle = V2;
+    ctx.beginPath(); ctx.moveTo(W, cy); ctx.lineTo(W-aw, cy-5); ctx.lineTo(W-aw, cy+5); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(0,  cy); ctx.lineTo(aw,   cy-5); ctx.lineTo(aw,   cy+5); ctx.closePath(); ctx.fill();
   });
 
-  // Draw transversal (clipped to canvas height)
-  ctx.strokeStyle=V1;ctx.lineWidth=2.5;
-  ctx.beginPath();ctx.moveTo(tx0,ty0);ctx.lineTo(tx1,ty1);ctx.stroke();
+  // Fixed intersection on r1 at x = W*0.38
+  const ix1 = W * 0.38;
+  // Transversal direction: going from upper-left to lower-right
+  // angle α is measured at ix1 between r1 (going right) and transversal (going down-right)
+  // so transversal slope = tan(rad)  →  dy/dx = tan(rad)
+  const dx_per_dy = 1 / Math.tan(rad);           // horizontal shift per vertical unit
+  const dy        = cy2 - cy1;                    // vertical gap between lines
+  const ix2       = ix1 + dy * dx_per_dy;         // intersection on r2
+
+  // Extend transversal beyond both lines for clarity
+  const extend = 40;
+  const tx0 = ix1 - extend * dx_per_dy;
+  const ty0 = cy1 - extend;
+  const tx1 = ix2 + extend * dx_per_dy;
+  const ty1 = cy2 + extend;
+
+  ctx.strokeStyle = V1; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(tx0, ty0); ctx.lineTo(tx1, ty1); ctx.stroke();
 
   // Intersection dots
-  dot(ix1,cy1,5,V1);dot(ix2,cy2,5,V1);
+  dot(ix1, cy1, 5, V1);
+  dot(ix2, cy2, 5, V1);
 
-  // Angle arcs — contained, radius proportional to spacing
-  const arcR=Math.min(28, dy*0.28);
+  // ── Angle arcs ──────────────────────────────────────────────────
+  // The transversal goes from upper-left to lower-right.
+  // Its direction angle (measured from positive x-axis) = rad  (e.g. 30° → goes 30° below horizontal)
+  const tDir = rad; // direction of transversal going right-downward
 
-  // α at ix1: angle between horizontal (going right) and transversal (going down-right)
-  // transversal direction angle from horizontal
-  const tAngle=Math.atan2(cy2-cy1, ix2-ix1); // positive = going down-right
-  // interior angle α on the right side of transversal, below line1
-  ctx.strokeStyle=RE;ctx.lineWidth=1.8;
+  const arcR = Math.min(32, dy * 0.22);
+
+  // α at ix1 (upper intersection):
+  // Interior angle is BELOW r1, on the RIGHT side of the transversal.
+  // Arc from transversal direction (tDir) to horizontal right (0), going counter-clockwise.
+  ctx.strokeStyle = RE; ctx.lineWidth = 1.8;
   ctx.beginPath();
-  ctx.arc(ix1,cy1,arcR, 0, tAngle); // from horizontal right to transversal direction
+  ctx.arc(ix1, cy1, arcR, 0, tDir);   // 0 → tDir  (clockwise = interior right-below)
   ctx.stroke();
 
-  // β at ix2: interior angle on left side of transversal, above line2
-  // from transversal direction (going up-left = tAngle+π) to horizontal left (π)
+  // β at ix2 (lower intersection):
+  // Interior angle is ABOVE r2, on the LEFT side of the transversal.
+  // Supplementary: β = 180° - α
+  // Arc from π (horizontal left) to π - tDir going clockwise → or equivalently:
   ctx.beginPath();
-  ctx.arc(ix2,cy2,arcR, Math.PI+tAngle, Math.PI); // supplementary angle
+  ctx.arc(ix2, cy2, arcR, Math.PI - tDir, Math.PI, false); // left side, above r2
   ctx.stroke();
 
-  // Labels — positioned safely inside canvas
-  ctx.font='bold 15px Segoe UI';ctx.fillStyle=RE;
-  // α label: just right and below ix1
-  const alx=Math.min(ix1+arcR+6, W-60);
-  ctx.fillText(`α = ${ang}°`, alx, cy1+arcR*0.6+4);
-  // β label: just left of ix2 and above
-  const blx=Math.max(ix2-arcR-70, 4);
-  ctx.fillText(`β = ${180-ang}°`, blx, cy2-arcR*0.4-4);
+  // Labels — anchored safely inside canvas
+  ctx.font = 'bold 15px Segoe UI'; ctx.fillStyle = RE;
+  // α label: right of arc, below r1
+  ctx.fillText(`α = ${ang}°`,  ix1 + arcR + 6, cy1 + arcR * 0.7 + 4);
+  // β label: left of arc, above r2
+  ctx.fillText(`β = ${180 - ang}°`, Math.max(6, ix2 - arcR - 80), cy2 - arcR * 0.5 - 6);
 
-  // dimension line between the two intersections
-  ctx.setLineDash([5,4]);ctx.strokeStyle=VB;ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(ix1,cy1+4);ctx.lineTo(ix2,cy2-4);ctx.stroke();
-  ctx.setLineDash([]);
+  // Sum annotation
+  const sum = ang + (180 - ang);
+  const sumColor = ang === 90 ? GR : (ang < 90 ? RE : MU);
+  ctx.font = '13px Segoe UI'; ctx.fillStyle = sumColor;
+  ctx.fillText(`α + β = ${ang}° + ${180 - ang}° = ${sum}°`, ix1 - 20, (cy1 + cy2) / 2 + 5);
 
-  // Labels for lines
-  ctx.font='14px Segoe UI';ctx.fillStyle=V2;
-  ctx.fillText('r₁',W-28,cy1-8);
-  ctx.fillText('r₂',W-28,cy2-8);
-  ctx.fillText('t',Math.min(ix1,ix2)/2+4,Math.min(cy1,cy2)/2+8);
+  // Line labels
+  ctx.font = '14px Segoe UI'; ctx.fillStyle = V2;
+  ctx.fillText('r₁', W - 24, cy1 - 10);
+  ctx.fillText('r₂', W - 24, cy2 - 10);
+  ctx.fillText('t',  Math.min(tx0 + 8, ix1 - 16), ty0 + 16);
 }
 function dParalelas(W,H,t){
   const cy1=H*0.35,cy2=H*0.68,tx=W*0.4;
@@ -610,560 +623,6 @@ function dConverge(W,H,t){
   // Labels
   ctx.font='14px Segoe UI';ctx.fillStyle=V2;
   ctx.fillText('r₁',8,cy1-8);ctx.fillText('r₂',8,cy2+18);ctx.fillText('t',tx+5,(ty1+ty2)/2-10);
-}
-
-/* ════════════════════════════════════════
-   V. EVALUACIÓN DOCENTE
-════════════════════════════════════════ */
-const QS=[
-  {q:'Un estudiante de 6° básico dice: "el punto es muy pequeño, pero existe porque lo veo en el papel". Como docente, ¿qué respuesta es más adecuada pedagógicamente?',
-   o:['Decirle que tiene razón, el punto sí existe físicamente','Explicar que lo que ve es la representación gráfica; el punto geométrico no tiene extensión','Ignorar el comentario y continuar la clase','Decirle que el punto no existe en ningún sentido'],a:1,
-   ok:'Correcto. El docente debe distinguir entre representación gráfica y objeto geométrico, sin invalidar la percepción del estudiante.',
-   no:'Incorrecto. El docente CPC debe clarificar la distinción entre representación y objeto matemático abstracto.'},
-  {q:'¿En qué nivel del currículum chileno se introduce formalmente el concepto de "recta" (línea infinita) según las Bases Curriculares?',
-   o:['3° básico','5° básico','7° básico','1° medio'],a:2,
-   ok:'Correcto. La recta como objeto formal aparece en 7° básico, aunque se trabaja intuitivamente antes.',
-   no:'Incorrecto. La recta como objeto formal se introduce en 7° básico en las Bases Curriculares.'},
-  {q:'Según el V Postulado de Euclides, si los ángulos interiores del mismo lado suman exactamente 180°, las rectas son...',
-   o:['Convergentes','Paralelas','Perpendiculares','Secantes'],a:1,
-   ok:'Correcto. Suma = 180° implica que las rectas no se cortarán: son paralelas.',
-   no:'Incorrecto. Cuando la suma es exactamente 180°, las rectas son paralelas.'},
-  {q:'Un futuro docente diseña una actividad donde pide a sus alumnos que "dibujen un punto muy pequeño". ¿Qué error conceptual subyace en esta instrucción?',
-   o:['Ninguno, es una instrucción adecuada','Confunde el objeto geométrico (sin extensión) con su representación gráfica','El punto no puede dibujarse bajo ninguna circunstancia','El punto siempre debe dibujarse grande'],a:1,
-   ok:'Correcto. La instrucción confunde el objeto abstracto (punto geométrico) con su representación convencional.',
-   no:'Incorrecto. El problema es que "muy pequeño" sigue siendo una extensión; el punto geométrico no tiene tamaño.'},
-  {q:'¿Cuál de estas afirmaciones sobre el plano geométrico es correcta desde el punto de vista matemático?',
-   o:['El plano tiene un espesor muy pequeño pero medible','El plano es finito si lo delimitamos con bordes','El plano tiene dos dimensiones y espesor igual a cero','El plano es igual a una superficie plana física'],a:2,
-   ok:'Correcto. El plano es un objeto bidimensional con espesor exactamente cero, de extensión infinita.',
-   no:'Incorrecto. El plano tiene dos dimensiones (largo y ancho) y espesor estrictamente igual a cero.'},
-  {q:'Para enseñar la distinción entre "segmento", "rayo" y "recta" en 6° básico, ¿qué estrategia es más coherente con el CPC?',
-   o:['Dar las tres definiciones formales simultáneamente','Trabajar con objetos del entorno y progresivamente formalizar cada tipo','Pedir que memoricen las definiciones del texto escolar','Evitar el tema hasta 7° básico'],a:1,
-   ok:'Correcto. El CPC implica partir de contextos concretos y escalar hacia la formalización progresiva.',
-   no:'Incorrecto. El Conocimiento Pedagógico del Contenido implica conectar el saber disciplinar con estrategias didácticas contextualizadas.'},
-];
-let qs={q:0,sc:0,dn:false};
-function bQuiz(){qs={q:0,sc:0,dn:false};rQ();}
-function dQcv(){/* canvas hidden in quiz tab */}
-function rQ(){
-  const s=document.getElementById('side');
-  if(qs.q>=QS.length){
-    const p=Math.round(qs.sc/QS.length*100);
-    const m=p>=80?'Excelente comprensión del CPC en geometría.':p>=60?'Buen avance. Revisa los aspectos didácticos.':'Profundiza en la relación entre saber disciplinar y saber didáctico.';
-    s.innerHTML=`
-    <div class="quiz-header">
-      <div><div class="qlbl">Evaluación CPC</div><h3>Evaluación completada</h3></div>
-    </div>
-    <div class="sbox">
-      <div class="big">${qs.sc}/${QS.length}</div>
-      <div class="pct">${p}% de respuestas correctas</div>
-      <p>${m}</p>
-      <button class="btn on" style="margin-top:20px;padding:12px 32px;font-size:16px" onclick="bQuiz()">↺ Reintentar evaluación</button>
-    </div>`;
-    return;
-  }
-  const q=QS[qs.q],pc=Math.round(qs.q/QS.length*100);
-  s.innerHTML=`
-  <div class="quiz-header">
-    <div><div class="qlbl">Evaluación con enfoque CPC</div><h3>Conocimiento Pedagógico del Contenido — Geometría</h3></div>
-    <div class="qcount">Pregunta ${qs.q+1} de ${QS.length}</div>
-  </div>
-  <div style="padding:14px 28px 4px"><div class="pbar"><div class="pfill" style="width:${pc}%"></div></div></div>
-  <div class="qwrap">
-    <div class="qq">${q.q}</div>
-    <div class="qopts">${q.o.map((o,i)=>`<button class="qopt" id="qo${i}" onclick="aQ(${i})"><b style="color:var(--v2);margin-right:8px">${String.fromCharCode(65+i)}.</b>${o}</button>`).join('')}</div>
-    <div id="qfb"></div>
-    <div id="qnx"></div>
-  </div>`;
-}
-function aQ(i){
-  if(qs.dn)return;qs.dn=true;
-  const q=QS[qs.q],ok=i===q.a;if(ok)qs.sc++;
-  document.querySelectorAll('.qopt').forEach((el,j)=>{
-    el.disabled=true;
-    if(j===q.a)el.classList.add('ok');
-    else if(j===i)el.classList.add('no');
-  });
-  document.getElementById('qfb').innerHTML=`<div class="qfb ${ok?'ok':'no'}">${ok?'✓ '+q.ok:'✗ '+q.no}</div>`;
-  document.getElementById('qnx').innerHTML=`<button class="btn on qnx" onclick="nQ()">${qs.q+1<QS.length?'Siguiente pregunta →':'Ver resultado final'}</button>`;
-}
-function nQ(){qs.q++;qs.dn=false;rQ();}
-
-/* ANIM */
-function aLoop(who){function lp(){st.t=(st.t||0)+0.025;if(who==='pu'&&tab===0)dPunto();else if(who==='li'&&tab===1)dLinea();else if(who==='pl'&&tab===2)dPlano();else if(who==='po'&&tab===3)dPost();else return;af=requestAnimationFrame(lp);}af=requestAnimationFrame(lp);}
-function tAnim(who){st.an=!st.an;const ids={pu:'bpa',li:'bla',pl:'bpla'};const btn=document.getElementById(ids[who]);if(btn){btn.textContent=st.an?'⏸ Animación':'▶ Animación';btn.classList.toggle('on',st.an);}if(st.an)aLoop(who);else{if(af)cancelAnimationFrame(af);af=null;draw();}}
-
-function buildSide(){if(tab===0)bPunto();else if(tab===1)bLinea();else if(tab===2)bPlano();else if(tab===3)bPost();else bQuiz();}
-window.addEventListener('load',()=>{resize();buildSide();});
-</script>
-</body>
-</html>.tab{padding:12px 16px;font-size:17px;font-weight:600;color:#c0bcf0;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;letter-spacing:.03em;transition:all .2s}
-.tab:hover{color:#fff}
-.tab.active{color:#fff;border-bottom:2px solid #fff}
-
-/* LAYOUT */
-main{display:flex;height:calc(100vh - 90px);overflow:hidden}
-.cpanel{flex:1;display:flex;flex-direction:column;background:var(--white);border-right:1px solid var(--vb);position:relative;overflow:hidden}
-.cpanel.hidden{display:none}
-canvas{flex:1;display:block}
-.side{width:420px;display:flex;flex-direction:column;background:var(--white);overflow-y:auto}
-.side.fullwidth{width:100%}
-
-/* DEFINITION BOX — matches beamer block */
-.dbox{background:var(--v1);color:#fff;padding:14px 16px}
-.dlbl{font-size:15px;font-weight:700;color:var(--vb);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
-.dbox h3{font-size:16px;font-weight:700;margin-bottom:5px}
-.dbox p{font-size:17px;color:#d8d4f8;line-height:1.65}
-.dbox em{color:#fff;font-style:normal;font-weight:600}
-
-/* BLOCKS matching beamer */
-.blk{border-radius:0;margin-bottom:7px}
-.blk .bt{font-size:15px;font-weight:700;padding:4px 10px;background:var(--v2);color:#fff;font-family:'Segoe UI',Arial,sans-serif}
-.blk .bb{font-size:16px;padding:7px 9px;line-height:1.6;background:var(--vl);color:var(--text);border:1px solid var(--vb);border-top:none}
-.blk.alert .bt{background:var(--red)}
-.blk.alert .bb{background:#fff0f0;border-color:#e0a0a0}
-.blk.example .bt{background:var(--green)}
-.blk.example .bb{background:#f0fff4;border-color:#a0d0a8}
-.blk.warn .bt{background:var(--gold)}
-.blk.warn .bb{background:#fffbf0;border-color:#e0cc80}
-
-/* SECTION LABEL */
-.slbl{font-size:15px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:11px 13px 4px}
-
-/* CONTROLS */
-.cwrap{padding:0 14px 14px}
-.brow{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
-.btn{padding:5px 10px;font-size:17px;border:1px solid var(--vb);border-radius:3px;background:var(--white);color:var(--sub);cursor:pointer;font-weight:600;transition:all .15s;white-space:nowrap}
-.btn:hover{border-color:var(--v2);color:var(--v2)}
-.btn.on{background:var(--v2);color:#fff;border-color:var(--v2)}
-.btn.sm{padding:4px 8px;font-size:16px}
-.btn.clr{border-color:#ccc;color:#999}.btn.clr:hover{background:#eee}
-label{font-size:16px;color:var(--sub);display:block;margin-bottom:3px}
-input[type=range]{width:100%;accent-color:var(--v2);margin-bottom:9px}
-.vv{font-size:16px;color:var(--v2);font-weight:700}
-.pbox{background:var(--vl);border:1px solid var(--vb);border-left:3px solid var(--v2);border-radius:2px;padding:10px 12px;margin-bottom:7px;font-size:17px;color:var(--sub);line-height:1.7}
-.pbox b{color:var(--v1)}
-.pbox.gl{border-left-color:var(--green)}
-.pbox.gr{border-left-color:var(--red)}
-.pbox.gw{border-left-color:var(--gold)}
-.div{height:1px;background:var(--vb);margin:5px 13px}
-
-/* CPC LAYER */
-.cpc-toggle{display:flex;align-items:center;gap:7px;padding:8px 13px;cursor:pointer;background:var(--vl);border-bottom:1px solid var(--vb)}
-.cpc-toggle span{font-size:16px;font-weight:700;color:var(--v2);letter-spacing:.04em}
-.cpc-toggle .pill{font-size:11px;background:var(--v2);color:#fff;padding:1px 7px;border-radius:10px}
-.cpc-panel{display:none;background:var(--vl);border-bottom:1px solid var(--vb);padding:10px 13px}
-.cpc-panel.open{display:block}
-.cpc-q{font-size:17px;color:var(--text);line-height:1.6;margin-bottom:6px;padding-left:10px;border-left:2px solid var(--v3)}
-
-/* QUIZ FULLSCREEN */
-.qwrap{padding:20px 28px}
-.pbar{height:4px;background:var(--vb);border-radius:2px;margin-bottom:16px}
-.pfill{height:4px;background:var(--v2);border-radius:2px;transition:width .4s}
-.qq{font-size:17px;color:var(--text);line-height:1.7;margin-bottom:14px;font-weight:600}
-.qopts{display:flex;flex-direction:column;gap:8px}
-.qopt{padding:13px 16px;border:1.5px solid var(--vb);border-radius:4px;font-size:16px;cursor:pointer;transition:all .15s;background:var(--white);color:var(--text);text-align:left;line-height:1.5}
-.qopt:hover{border-color:var(--v2);background:var(--vl)}
-.qopt.ok{background:#eaf4ee;border-color:var(--green);color:var(--green)}
-.qopt.no{background:#f8eaea;border-color:var(--red);color:var(--red)}
-.qfb{font-size:15px;margin-top:12px;padding:13px 16px;border-radius:4px;line-height:1.6}
-.qfb.ok{background:#eaf4ee;color:var(--green);border:1px solid #8acc9a}
-.qfb.no{background:#f8eaea;color:var(--red);border:1px solid #d08080}
-.qnx{margin-top:12px;width:100%;padding:10px;font-size:16px}
-.sbox{text-align:center;padding:40px 28px}
-.sbox .big{font-size:64px;font-weight:700;color:var(--v1)}
-.sbox .pct{font-size:20px;color:var(--v2);font-weight:700;margin-top:6px}
-.sbox p{font-size:16px;color:var(--sub);margin-top:12px;line-height:1.7;max-width:520px;margin-left:auto;margin-right:auto}
-.quiz-header{background:var(--v1);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between}
-.quiz-header .qlbl{font-size:13px;font-weight:700;color:var(--vb);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
-.quiz-header h3{font-size:17px;font-weight:700}
-.quiz-header .qcount{font-size:14px;color:var(--vb)}
-
-/* POSTULADO steps */
-.stbox{background:var(--vl);border:1px solid var(--vb);border-radius:3px;padding:10px 12px;margin-bottom:6px;font-size:17px;color:var(--sub);line-height:1.6;cursor:pointer;transition:border-color .2s}
-.stbox:hover{border-color:var(--v2)}
-.stbox.ast{border-left:3px solid var(--v2);background:#eeedfe}
-.stbox b{color:var(--v1);display:block;margin-bottom:2px;font-size:17px}
-</style>
-</head>
-<body>
-<header>
-  <div class="htop">
-    <div class="hinst">
-      <div class="hbadge">FD</div>
-      <div>
-        <h1>Objetos Geométricos Fundamentales &nbsp;<span class="badge-cpc">CPC</span></h1>
-        <p>Conocimiento Pedagógico del Contenido · Eje de Geometría · Clase 01</p>
-      </div>
-    </div>
-    <div class="hmeta"><div>Formación Docente en Matemática</div><div>Prosecución de Estudios · Bases Curriculares · Chile</div></div>
-  </div>
-</header>
-<div class="tabs">
-  <div class="tab active" onclick="sw(0)">I. Punto</div>
-  <div class="tab" onclick="sw(1)">II. Línea</div>
-  <div class="tab" onclick="sw(2)">III. Plano</div>
-  <div class="tab" onclick="sw(3)">IV. V Postulado</div>
-  <div class="tab" onclick="sw(4)">V. Evaluación Docente</div>
-</div>
-<main>
-  <div class="cpanel"><canvas id="cv"></canvas></div>
-  <div class="side" id="side"></div>
-</main>
-
-<script>
-const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
-const V1='#3d3487',V2='#534ab7',V3='#7b74cc',VL='#eeedfe',VB='#c8c3f0';
-const MU='#8a86b0',GR='#2a6a3a',RE='#7a1a1a',GO='#b8963e';
-let tab=0,af=null,st={};
-
-function resize(){const p=cv.parentElement;cv.width=p.clientWidth;cv.height=p.clientHeight-2;draw();}
-window.addEventListener('resize',resize);
-function sw(i){
-  tab=i;
-  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',i===j));
-  if(af){cancelAnimationFrame(af);af=null;}
-  cv.onmousedown=cv.onmousemove=cv.onmouseup=cv.onclick=null;
-  st={};
-  // quiz tab: hide canvas, expand side to full width
-  const cpanel=document.querySelector('.cpanel');
-  const side=document.getElementById('side');
-  if(i===4){cpanel.classList.add('hidden');side.classList.add('fullwidth');}
-  else{cpanel.classList.remove('hidden');side.classList.remove('fullwidth');}
-  buildSide();
-  if(i!==4) draw();
-}
-function draw(){if(tab===0)dPunto();else if(tab===1)dLinea();else if(tab===2)dPlano();else if(tab===3)dPost();else dQcv();}
-
-function grid(s,c){const W=cv.width,H=cv.height;s=s||50;ctx.strokeStyle=c||'#eeedfe';ctx.lineWidth=0.7;for(let x=0;x<W;x+=s){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<H;y+=s){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}}
-function dot(x,y,r,c){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=c;ctx.fill();}
-function arr(x,y,d){ctx.fillStyle=V1;ctx.beginPath();if(d>0){ctx.moveTo(x,y);ctx.lineTo(x-10,y-5);ctx.lineTo(x-10,y+5);}else{ctx.moveTo(x,y);ctx.lineTo(x+10,y-5);ctx.lineTo(x+10,y+5);}ctx.closePath();ctx.fill();}
-
-/* ── CPC TOGGLE COMPONENT ── */
-function cpcHTML(id, qs){
-  const items=qs.map(q=>`<div class="cpc-q">▸ ${q}</div>`).join('');
-  return `<div class="cpc-toggle" onclick="tCPC('${id}')">
-    <span>🎓 Reflexión docente (CPC)</span>
-    <div class="pill" id="pill-${id}">▼</div>
-  </div>
-  <div class="cpc-panel" id="cpc-${id}">${items}</div>`;
-}
-function tCPC(id){
-  const p=document.getElementById('cpc-'+id);
-  const pill=document.getElementById('pill-'+id);
-  const open=p.classList.toggle('open');
-  pill.textContent=open?'▲':'▼';
-}
-
-/* ════════════════════════════════════════
-   I. PUNTO
-════════════════════════════════════════ */
-function bPunto(){
-  document.getElementById('side').innerHTML=`
-  <div class="dbox">
-    <div class="dlbl">Definición — Punto (Dim. 0)</div>
-    <h3>El objeto sin extensión</h3>
-    <p>Euclides: <em>"aquello que no tiene partes"</em>.<br>
-    Solo posición. Sin longitud, anchura ni profundidad.</p>
-  </div>
-  ${cpcHTML('pu',[
-    '¿Cómo introduce el texto escolar de 5° básico el concepto de punto? ¿Y el de 7°? ¿Qué diferencias observas?',
-    '¿Qué error frecuente cometen los estudiantes al confundir el símbolo gráfico del punto con el objeto geométrico?',
-    '¿Cómo explicarías a tus futuros alumnos que el punto "existe" pero no ocupa espacio?',
-    '¿En qué nivel escolar es apropiado introducir la definición euclidiana formal?'
-  ])}
-  <div class="slbl">Visualización didáctica</div>
-  <div class="cwrap" style="display:flex;flex-direction:column;gap:10px;">
-    <div class="brow">
-      <button class="btn on" id="bpa" onclick="tAnim('pu')">⏸ Animación</button>
-      <button class="btn clr sm" onclick="st.pts=[];draw()">✕ Limpiar</button>
-    </div>
-    <div>
-      <label>Radio visual <span class="vv" id="szv">6</span> px &nbsp;<span style="font-size:13px;color:var(--muted)">(tamaño real = 0)</span></label>
-      <input type="range" id="szr" min="2" max="18" value="6" oninput="document.getElementById('szv').textContent=this.value;if(!st.an)dPunto()">
-    </div>
-    <p style="font-size:15px;color:var(--sub);line-height:1.6;">Haz clic en el lienzo para registrar puntos y observar sus coordenadas.</p>
-    <div class="pbox" id="ptinfo" style="line-height:1.8;"><b>Sin puntos aún.</b><br>Haz clic en el lienzo.</div>
-  </div>
-  <div class="div"></div>
-  <div class="slbl">Análisis curricular</div>
-  <div class="cwrap" style="display:flex;flex-direction:column;gap:10px;">
-    <div class="blk"><div class="bt">Bases Curriculares (5° básico)</div><div class="bb" style="line-height:1.8;">El punto se introduce como noción intuitiva, sin definición formal. Referencia: ubicación en el plano.</div></div>
-    <div class="blk warn"><div class="bt">Error frecuente en estudiantes</div><div class="bb" style="line-height:1.8;">Confundir el "punto" geométrico (sin extensión) con el "punto" físico dibujado en papel (que sí ocupa espacio).</div></div>
-    <div class="blk example"><div class="bt">Propiedades clave</div><div class="bb" style="line-height:1.8;"><b>Dimensión:</b> 0 &nbsp;|&nbsp; <b>Extensión:</b> ninguna<br><b>Define:</b> posición exacta en el espacio</div></div>
-  </div>`;
-  st.pts=[];st.an=true;st.t=0;cv.onclick=ePunto;aLoop('pu');
-}
-function ePunto(e){const r=cv.getBoundingClientRect();const x=e.clientX-r.left,y=e.clientY-r.top;st.pts.push({x,y});const cx=Math.round(x-cv.width/2),cy=Math.round(cv.height/2-y);document.getElementById('ptinfo').innerHTML=`<b>Punto P${st.pts.length}</b><br>Coordenadas: (<b>${cx}</b>, <b>${cy}</b>)<br><span style="color:var(--muted)">Solo posición. Sin extensión.</span>`;if(!st.an)dPunto();}
-function dPunto(){
-  const W=cv.width,H=cv.height,t=st.t||0;
-  ctx.clearRect(0,0,W,H);ctx.fillStyle='#fafafe';ctx.fillRect(0,0,W,H);grid();
-  ctx.strokeStyle='#d0ccf0';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();
-  ctx.font='13px Segoe UI';ctx.fillStyle=MU;ctx.fillText('x',W-13,H/2-6);ctx.fillText('y',W/2+6,13);
-  const sz=parseInt(document.getElementById('szr')?.value||6);
-  const pulse=st.an?(sz+3*Math.sin(t*2)):sz;
-  dot(W/2,H/2,pulse,V2);
-  if(st.an){ctx.beginPath();ctx.arc(W/2,H/2,pulse+5+4*Math.abs(Math.sin(t)),0,Math.PI*2);ctx.strokeStyle=V2+'40';ctx.lineWidth=1.5;ctx.stroke();}
-  ctx.font='bold 15px Segoe UI';ctx.fillStyle=V1;ctx.fillText('O(0,0)',W/2+pulse+4,H/2-4);
-  (st.pts||[]).forEach((p,i)=>{dot(p.x,p.y,sz,V1);ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText(`P${i+1}(${Math.round(p.x-W/2)},${Math.round(H/2-p.y)})`,p.x+sz+3,p.y-3);});
-  // didactic note
-  ctx.fillStyle='rgba(238,237,254,0.9)';ctx.fillRect(8,H-42,W-16,34);
-  ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(8,H-42,W-16,34);
-  ctx.font='13px Segoe UI';ctx.fillStyle=V1;
-  ctx.fillText('🎓 Para el docente: el tamaño visual del punto es una convención gráfica.',14,H-26);
-  ctx.fillText('   El objeto geométrico no tiene extensión — solo posición.',14,H-12);
-}
-
-/* ════════════════════════════════════════
-   II. LÍNEA
-════════════════════════════════════════ */
-function bLinea(){
-  document.getElementById('side').innerHTML=`
-  <div class="dbox">
-    <div class="dlbl">Definición — Línea (Dim. 1)</div>
-    <h3>Conjunto continuo de puntos</h3>
-    <p>Recorrible en exactamente dos sentidos. Sin ancho.<br>Tipos: <em>infinita, semiinfinita, finita, cerrada.</em></p>
-  </div>
-  ${cpcHTML('li',[
-    '¿Cómo distingue el currículum escolar entre "línea", "recta" y "segmento"? ¿En qué curso aparece cada término?',
-    '¿Por qué los estudiantes suelen confundir "línea" con "segmento"? ¿Qué representación favorece esa confusión?',
-    'Diseña una pregunta de aula que obligue a un estudiante de 6° básico a diferenciar los cuatro tipos de línea.',
-    '¿Qué dificultades cognitivas aparecen al introducir el concepto de "infinito" en la línea?'
-  ])}
-  <div class="slbl">Tipo de línea</div>
-  <div class="cwrap">
-    <div class="brow">
-      <button class="btn on" id="lti" onclick="sL('i')">Infinita</button>
-      <button class="btn"    id="lts" onclick="sL('s')">Semiinfinita</button>
-      <button class="btn"    id="ltf" onclick="sL('f')">Finita</button>
-      <button class="btn"    id="ltc" onclick="sL('c')">Cerrada</button>
-    </div>
-    <div class="brow"><button class="btn on" id="bla" onclick="tAnim('li')">⏸ Animación</button></div>
-    <label>Grosor <span class="vv" id="lwv">2</span> px</label>
-    <input type="range" id="lwr" min="1" max="6" value="2" oninput="document.getElementById('lwv').textContent=this.value;if(!st.an)dLinea()">
-    <div class="pbox" id="linfo"></div>
-  </div>
-  <div class="div"></div>
-  <div class="slbl">Análisis curricular</div>
-  <div class="cwrap">
-    <div class="blk warn"><div class="bt">Error frecuente en estudiantes</div><div class="bb">Usar "línea" y "segmento" como sinónimos. El texto escolar suele introducir "segmento" antes que "línea infinita", reforzando esta confusión.</div></div>
-    <div class="blk example"><div class="bt">Propiedades clave</div><div class="bb"><b>Dimensión:</b> 1 &nbsp;|&nbsp; <b>Extensión:</b> solo longitud<br><b>Sin:</b> ancho ni profundidad</div></div>
-  </div>`;
-  st.lt='i';st.an=true;st.t=0;sLInfo();aLoop('li');
-}
-const LINFO={
-  i:'<b>Línea infinita:</b> sin principio ni fin. Flechas en ambos extremos. Introducida formalmente en 7° básico.',
-  s:'<b>Rayo (semiinfinita):</b> origen fijo, extensión infinita en una dirección. Aparece en geometría analítica.',
-  f:'<b>Segmento:</b> dos extremos A y B. Extensión finita y medible. Es el más trabajado en ed. primaria.',
-  c:'<b>Curva cerrada:</b> regresa a su inicio, sin extremos. Ej: circunferencia. Clave para perímetro.'
-};
-function sL(t){st.lt=t;['i','s','f','c'].forEach(k=>document.getElementById('lt'+k)?.classList.remove('on'));document.getElementById('lt'+t)?.classList.add('on');sLInfo();if(!st.an)dLinea();}
-function sLInfo(){const e=document.getElementById('linfo');if(e)e.innerHTML=LINFO[st.lt];}
-function dLinea(){
-  const W=cv.width,H=cv.height,t=st.t||0,lw=parseInt(document.getElementById('lwr')?.value||2),cy=H/2;
-  ctx.clearRect(0,0,W,H);ctx.fillStyle='#fafafe';ctx.fillRect(0,0,W,H);grid();
-  ctx.strokeStyle=V2;ctx.lineWidth=lw;ctx.setLineDash([]);
-  if(st.lt==='i'){
-    ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(W,cy);ctx.stroke();arr(0,cy,-1);arr(W,cy,1);
-    if(st.an){const dx=((t*70)%(W+40))-20;dot(dx,cy,5,V1);}
-    ctx.font='14px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Línea infinita — sin principio ni fin',12,cy-20);
-  }else if(st.lt==='s'){
-    const ox=80;ctx.beginPath();ctx.moveTo(ox,cy);ctx.lineTo(W,cy);ctx.stroke();arr(W,cy,1);dot(ox,cy,5,V1);
-    ctx.font='bold 14px Segoe UI';ctx.fillStyle=V2;ctx.fillText('A',ox-4,cy-12);
-    if(st.an){const dx=ox+((t*60)%(W-ox-20));dot(dx,cy,4,V3);}
-    ctx.font='14px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Rayo: origen A definido, extensión infinita →',12,cy-20);
-  }else if(st.lt==='f'){
-    const ax=W*0.2,bx=W*0.8;ctx.beginPath();ctx.moveTo(ax,cy);ctx.lineTo(bx,cy);ctx.stroke();
-    dot(ax,cy,5,V1);dot(bx,cy,5,V1);
-    ctx.font='bold 14px Segoe UI';ctx.fillStyle=V2;ctx.fillText('A',ax-4,cy-12);ctx.fillText('B',bx-4,cy-12);
-    const mx=(ax+bx)/2,r=st.an?(3+2*Math.sin(t*3)):3;dot(mx,cy,r,V2+'99');
-    ctx.setLineDash([4,4]);ctx.strokeStyle='#bbb';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(ax,cy+22);ctx.lineTo(bx,cy+22);ctx.stroke();ctx.setLineDash([]);
-    ctx.font='13px Segoe UI';ctx.fillStyle=MU;ctx.fillText(`AB = ${Math.round(bx-ax)} px`,mx-24,cy+36);
-    ctx.fillText('Segmento AB — extensión finita y medible',12,cy-20);
-  }else{
-    const cx=W/2,ry=H*0.26,rx=W*0.28;ctx.beginPath();ctx.ellipse(cx,H/2,rx,ry,0,0,Math.PI*2);ctx.stroke();
-    if(st.an){const a=t*1.2;dot(cx+rx*Math.cos(a),H/2+ry*Math.sin(a),5,V1);}
-    ctx.font='14px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Curva cerrada — regresa a su punto de inicio',12,22);
-  }
-  ctx.fillStyle='rgba(238,237,254,0.9)';ctx.fillRect(8,H-42,W-16,34);
-  ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(8,H-42,W-16,34);
-  ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText('🎓 Para el docente: identificar qué tipo de línea usa cada nivel del currículum',14,H-26);ctx.fillText('   ayuda a planificar la progresión conceptual adecuada.',14,H-12);
-}
-
-/* ════════════════════════════════════════
-   III. PLANO
-════════════════════════════════════════ */
-function bPlano(){
-  document.getElementById('side').innerHTML=`
-  <div class="dbox">
-    <div class="dlbl">Definición — Plano (Dim. 2)</div>
-    <h3>Extensión infinita bidimensional</h3>
-    <p>Conjunto de puntos con dos dimensiones (largo y ancho) y sin espesor.<br>Dimensión: <em>2</em></p>
-  </div>
-  ${cpcHTML('pl',[
-    '¿Cuándo y cómo introduce el currículum el concepto de plano cartesiano? ¿Qué relación tiene con el concepto de plano geométrico?',
-    '¿Qué dificultades tienen los estudiantes para comprender que el plano tiene "espesor cero"?',
-    '¿Cómo relacionarías el concepto de plano con la enseñanza de coordenadas en 6° básico?',
-    'Diseña una situación concreta del entorno que permita introducir el plano en 5° básico.'
-  ])}
-  <div class="slbl">Vista</div>
-  <div class="cwrap">
-    <div class="brow">
-      <button class="btn on" id="pv2" onclick="sPV('2')">Plano 2D</button>
-      <button class="btn"    id="pv3" onclick="sPV('3')">Perspectiva</button>
-      <button class="btn"    id="pve" onclick="sPV('e')">Explorar</button>
-    </div>
-    <div class="brow"><button class="btn on" id="bpla" onclick="tAnim('pl')">⏸ Animación</button><button class="btn clr sm" onclick="st.pp=[];draw()">✕ Limpiar</button></div>
-    <label>Cuadrícula <span class="vv" id="gdv">50</span></label>
-    <input type="range" id="gdr" min="25" max="90" value="50" oninput="document.getElementById('gdv').textContent=this.value;if(!st.an)dPlano()">
-  </div>
-  <div class="div"></div>
-  <div class="slbl">Análisis curricular</div>
-  <div class="cwrap">
-    <div class="blk warn"><div class="bt">Error frecuente en estudiantes</div><div class="bb">Confundir el "plano geométrico" (infinito, sin espesor) con una "superficie plana" física como una mesa o hoja de papel.</div></div>
-    <div class="blk example"><div class="bt">Propiedades clave</div><div class="bb"><b>Dimensión:</b> 2 &nbsp;|&nbsp; <b>Extensión:</b> largo y ancho infinitos<br><b>Espesor:</b> cero</div></div>
-  </div>`;
-  st.pv='2';st.an=true;st.t=0;st.pp=[];cv.onclick=null;aLoop('pl');
-}
-function sPV(v){st.pv=v;['2','3','e'].forEach(k=>document.getElementById('pv'+k)?.classList.remove('on'));document.getElementById('pv'+v)?.classList.add('on');cv.onclick=v==='e'?ePP:null;if(!st.an)dPlano();}
-function ePP(e){const r=cv.getBoundingClientRect();st.pp.push({x:e.clientX-r.left,y:e.clientY-r.top});if(!st.an)dPlano();}
-function dPlano(){
-  const W=cv.width,H=cv.height,t=st.t||0,gd=parseInt(document.getElementById('gdr')?.value||50);
-  ctx.clearRect(0,0,W,H);
-  if(st.pv==='2'){
-    ctx.fillStyle='#fafafe';ctx.fillRect(0,0,W,H);grid(gd,'#eeedfe');
-    ctx.strokeStyle='#c0bcf0';ctx.lineWidth=1.2;
-    ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();
-    ctx.font='13px Segoe UI';ctx.fillStyle=MU;ctx.fillText('x',W-12,H/2-7);ctx.fillText('y',W/2+6,13);ctx.fillText('O',W/2+3,H/2-5);
-    if(st.an){const px=W/2+130*Math.cos(t),py=H/2+90*Math.sin(t*1.2);dot(px,py,5,V2);ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText(`(${Math.round(px-W/2)},${Math.round(H/2-py)})`,px+8,py-5);}
-  }else if(st.pv==='3'){
-    ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
-    const vx=W/2,vy=H*0.3,base=H*0.85;
-    ctx.strokeStyle=VB;ctx.lineWidth=0.7;
-    const cols=14;for(let i=-cols;i<=cols;i++){const bx=W/2+i*(W/(cols*1.6));ctx.beginPath();ctx.moveTo(bx,base);ctx.lineTo(vx,vy);ctx.stroke();}
-    for(let j=1;j<=9;j++){const rr=j/9,yy=vy+rr*(base-vy),hw=(W*0.65)*rr;ctx.beginPath();ctx.moveTo(vx-hw/2,yy);ctx.lineTo(vx+hw/2,yy);ctx.stroke();}
-    ctx.fillStyle='rgba(200,195,240,0.18)';ctx.beginPath();ctx.moveTo(vx-W*0.32,base);ctx.lineTo(vx,vy);ctx.lineTo(vx+W*0.32,base);ctx.closePath();ctx.fill();
-    ctx.font='bold 15px Segoe UI';ctx.fillStyle=V1;ctx.fillText('Plano en perspectiva',vx-72,vy-16);
-    if(st.an){const a=t*0.5,rr=W*0.22;dot(vx+rr*Math.cos(a)*0.8,vy+(base-vy)*0.5+rr*Math.sin(a)*0.25,4,V2);}
-  }else{
-    ctx.fillStyle='#fafafe';ctx.fillRect(0,0,W,H);grid(gd,'#eeedfe');
-    ctx.strokeStyle='#c0bcf0';ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();
-    (st.pp||[]).forEach((p,i)=>{dot(p.x,p.y,5,V2);ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText(`P${i+1}(${Math.round(p.x-W/2)},${Math.round(H/2-p.y)})`,p.x+7,p.y-4);});
-  }
-  ctx.fillStyle='rgba(238,237,254,0.9)';ctx.fillRect(8,H-42,W-16,34);ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(8,H-42,W-16,34);
-  ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText('🎓 Para el docente: distinguir entre el plano geométrico (abstracto, infinito)',14,H-26);ctx.fillText('   y superficies planas físicas es clave para evitar concepciones erróneas.',14,H-12);
-}
-
-/* ════════════════════════════════════════
-   IV. V POSTULADO
-════════════════════════════════════════ */
-function bPost(){
-  document.getElementById('side').innerHTML=`
-  <div class="dbox">
-    <div class="dlbl">V Postulado de Euclides (~300 a.C.)</div>
-    <h3>El postulado de las paralelas</h3>
-    <p>Si una transversal corta dos rectas y los ángulos interiores del mismo lado suman menos de 180°, las rectas se cortan de ese lado.</p>
-  </div>
-  ${cpcHTML('po',[
-    '¿Por qué el V Postulado fue históricamente el más cuestionado de los Elementos de Euclides?',
-    '¿Cómo definirías "rectas paralelas" a estudiantes de 5° básico sin usar el lenguaje formal del postulado?',
-    'Analiza cómo define "rectas paralelas" el texto escolar de 5°, 6° y 7° básico. ¿Qué diferencias encuentras?',
-    '¿Qué implica pedagógicamente que existan geometrías no euclidianas donde el V Postulado no se cumple?'
-  ])}
-  <div class="slbl">Exploración didáctica</div>
-  <div class="cwrap" style="display:flex;flex-direction:column;gap:10px;">
-    <div class="brow">
-      <button class="btn on" id="ps0" onclick="sPS(0)">Enunciado</button>
-      <button class="btn"    id="ps1" onclick="sPS(1)">Paralelas</button>
-      <button class="btn"    id="ps2" onclick="sPS(2)">Convergentes</button>
-      <button class="btn"    id="ps3" onclick="sPS(3)">Explorar</button>
-    </div>
-    <div>
-      <label>Ángulo α = <span class="vv" id="angv">30</span>°</label>
-      <input type="range" id="angr" min="5" max="85" value="30" oninput="onAng()">
-    </div>
-    <div class="pbox" id="anginfo" style="line-height:1.8;"></div>
-  </div>
-  <div class="div"></div>
-  <div class="slbl">Secuencia didáctica recomendada</div>
-  <div class="cwrap" style="display:flex;flex-direction:column;gap:8px;">
-    <div class="stbox ast" id="sd0" onclick="sPS(0)"><b>1. Enunciado original</b>Lee el postulado y visualiza transversal, ángulos y rectas.</div>
-    <div class="stbox" id="sd1" onclick="sPS(1)"><b>2. Caso paralelas</b>Ángulos interiores suman 180° → rectas no se cortan.</div>
-    <div class="stbox" id="sd2" onclick="sPS(2)"><b>3. Caso convergente</b>Suma menor que 180° → rectas se cortan.</div>
-    <div class="stbox" id="sd3" onclick="sPS(3)"><b>4. Exploración libre</b>Mueve el slider y observa la configuración resultante.</div>
-  </div>`;
-  st.ps=0;st.an=true;st.t=0;updAng();aLoop('po');
-}
-function sPS(i){st.ps=i;[0,1,2,3].forEach(k=>{document.getElementById('ps'+k)?.classList.remove('on');document.getElementById('sd'+k)?.classList.remove('ast');});document.getElementById('ps'+i)?.classList.add('on');document.getElementById('sd'+i)?.classList.add('ast');if(!st.an)dPost();}
-function onAng(){document.getElementById('angv').textContent=document.getElementById('angr').value;updAng();if(!st.an)dPost();}
-function updAng(){
-  const a=parseInt(document.getElementById('angr')?.value||30);
-  const el=document.getElementById('anginfo');if(!el)return;
-  const par=a===90;
-  el.innerHTML=`<b>α = ${a}°, β = ${180-a}°</b><br>Suma = <b>180°</b> → rectas <b>${par?'paralelas':'se cortan'}</b>`;
-  el.className='pbox '+(par?'gl':'gr');
-}
-function dPost(){
-  const W=cv.width,H=cv.height,t=st.t||0,ang=parseInt(document.getElementById('angr')?.value||30);
-  ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);grid(60,'#f4f3ff');
-  if(st.ps===0){
-    dPBase(W,H,45,t);
-    ctx.fillStyle='rgba(248,247,255,0.95)';ctx.fillRect(10,10,W-20,134);ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(10,10,W-20,134);
-    const ls=['"Si una transversal corta dos rectas',' y los ángulos interiores de un lado',' suman menos de 180°,',' entonces las rectas se cortan',' de ese mismo lado."','','— Euclides, Elementos (~300 a.C.)'];
-    ctx.font='15px Segoe UI';ctx.fillStyle=V1;ls.forEach((l,i)=>ctx.fillText(l,20,33+i*16));
-  }else if(st.ps===1){
-    dParalelas(W,H,t);ctx.font='bold 15px Segoe UI';ctx.fillStyle=GR;ctx.fillText('Rectas paralelas — ángulos interiores suman 180°',14,22);
-  }else if(st.ps===2){
-    dConverge(W,H,t);ctx.font='bold 15px Segoe UI';ctx.fillStyle=RE;ctx.fillText('Rectas convergentes — suma < 180°, se cortan',14,22);
-  }else{
-    dPBase(W,H,ang,t);
-    ctx.font='bold 15px Segoe UI';ctx.fillStyle=ang===90?GR:RE;
-    ctx.fillText(`α = ${ang}°   β = ${180-ang}°   → ${ang===90?'PARALELAS':'SE CORTAN'}`,14,22);
-  }
-  ctx.fillStyle='rgba(238,237,254,0.9)';ctx.fillRect(8,H-42,W-16,34);ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(8,H-42,W-16,34);
-  ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText('🎓 Para el docente: el V Postulado fue objeto de debate por ~2000 años.',14,H-26);ctx.fillText('   Su negación da origen a geometrías no euclidianas (Lobachevski, Riemann).',14,H-12);
-}
-function dPBase(W,H,ang,t){
-  const cy1=H*0.38,cy2=H*0.65,rad=ang*Math.PI/180,tx=W*0.25;
-  ctx.strokeStyle=V2;ctx.lineWidth=2;ctx.setLineDash([]);
-  ctx.beginPath();ctx.moveTo(0,cy1);ctx.lineTo(W*0.75,cy1);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(0,cy2);ctx.lineTo(W*0.75,cy2);ctx.stroke();
-  const dy=cy2-cy1,dx=dy/Math.tan(rad),x1=tx,y1=cy1-20,x2=tx+dx,y2=cy2+20;
-  ctx.strokeStyle=V1;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
-  const ix1=tx+(cy1-y1)*dx/(y2-y1),ix2=tx+(cy2-y1)*dx/(y2-y1);
-  dot(ix1,cy1,4,V1);dot(ix2,cy2,4,V1);
-  ctx.strokeStyle=RE;ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.arc(ix1,cy1,22,Math.PI/2,Math.PI/2+rad);ctx.stroke();
-  ctx.beginPath();ctx.arc(ix2,cy2,22,-Math.PI/2,-Math.PI/2+(Math.PI-rad));ctx.stroke();
-  ctx.font='bold 15px Segoe UI';ctx.fillStyle=RE;ctx.fillText(`α=${ang}°`,ix1+16,cy1+14);ctx.fillText(`β=${180-ang}°`,ix2+16,cy2-6);
-}
-function dParalelas(W,H,t){
-  const cy1=H*0.38,cy2=H*0.65,tx=W*0.3;
-  ctx.strokeStyle=V2;ctx.lineWidth=2;ctx.setLineDash([]);
-  ctx.beginPath();ctx.moveTo(0,cy1);ctx.lineTo(W,cy1);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(0,cy2);ctx.lineTo(W,cy2);ctx.stroke();
-  ctx.strokeStyle=V1;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(tx,cy1-30);ctx.lineTo(tx,cy2+30);ctx.stroke();
-  dot(tx,cy1,4,V1);dot(tx,cy2,4,V1);
-  const s=14;ctx.strokeStyle=GR;ctx.lineWidth=1.5;ctx.strokeRect(tx,cy1,s,s);ctx.strokeRect(tx,cy2-s,s,s);
-  ctx.font='13px Segoe UI';ctx.fillStyle=GR;ctx.fillText('90°',tx+s+3,cy1+11);ctx.fillText('90°',tx+s+3,cy2-3);
-  const dx=st.an?((t*40)%180):90;
-  ctx.strokeStyle=V2+'55';ctx.lineWidth=1;ctx.setLineDash([5,5]);
-  ctx.beginPath();ctx.moveTo(W*0.6,cy1);ctx.lineTo(W*0.6+dx,cy1);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(W*0.6,cy2);ctx.lineTo(W*0.6+dx,cy2);ctx.stroke();ctx.setLineDash([]);
-  ctx.font='13px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Las rectas nunca se cortan → son paralelas',W*0.6+8,(cy1+cy2)/2);
-}
-function dConverge(W,H,t){
-  const ix=W*0.82,iy=H/2;
-  ctx.strokeStyle=V2;ctx.lineWidth=2;ctx.setLineDash([]);
-  ctx.beginPath();ctx.moveTo(0,H*0.38);ctx.lineTo(ix,iy);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(0,H*0.65);ctx.lineTo(ix,iy);ctx.stroke();
-  const pulse=st.an?(5+3*Math.sin(t*3)):5;dot(ix,iy,pulse,RE);
-  ctx.font='bold 15px Segoe UI';ctx.fillStyle=RE;ctx.fillText('Punto de intersección',ix-78,iy-13);
-  ctx.strokeStyle=V1;ctx.lineWidth=2;const tx=W*0.28;ctx.beginPath();ctx.moveTo(tx-20,H*0.25);ctx.lineTo(tx+40,H*0.78);ctx.stroke();
 }
 
 /* ════════════════════════════════════════
