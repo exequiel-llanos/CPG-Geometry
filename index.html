@@ -41,8 +41,10 @@ header{background:var(--v1);color:#fff;border-bottom:2px solid var(--vb)}
 /* LAYOUT */
 main{display:flex;height:calc(100vh - 90px);overflow:hidden}
 .cpanel{flex:1;display:flex;flex-direction:column;background:var(--white);border-right:1px solid var(--vb);position:relative;overflow:hidden}
+.cpanel.hidden{display:none}
 canvas{flex:1;display:block}
-.side{width:320px;display:flex;flex-direction:column;background:var(--white);overflow-y:auto}
+.side{width:420px;display:flex;flex-direction:column;background:var(--white);overflow-y:auto}
+.side.fullwidth{width:100%}
 
 /* DEFINITION BOX — matches beamer block */
 .dbox{background:var(--v1);color:#fff;padding:14px 16px}
@@ -91,24 +93,28 @@ input[type=range]{width:100%;accent-color:var(--v2);margin-bottom:9px}
 .cpc-panel.open{display:block}
 .cpc-q{font-size:17px;color:var(--text);line-height:1.6;margin-bottom:6px;padding-left:10px;border-left:2px solid var(--v3)}
 
-/* QUIZ */
-.qwrap{padding:13px}
-.pbar{height:3px;background:var(--vb);border-radius:2px;margin-bottom:11px}
-.pfill{height:3px;background:var(--v2);border-radius:2px;transition:width .4s}
-.qq{font-size:15px;color:var(--text);line-height:1.6;margin-bottom:9px;font-weight:600}
-.qopts{display:flex;flex-direction:column;gap:5px}
-.qopt{padding:9px 12px;border:1px solid var(--vb);border-radius:3px;font-size:17px;cursor:pointer;transition:all .15s;background:var(--white);color:var(--text);text-align:left}
+/* QUIZ FULLSCREEN */
+.qwrap{padding:20px 28px}
+.pbar{height:4px;background:var(--vb);border-radius:2px;margin-bottom:16px}
+.pfill{height:4px;background:var(--v2);border-radius:2px;transition:width .4s}
+.qq{font-size:17px;color:var(--text);line-height:1.7;margin-bottom:14px;font-weight:600}
+.qopts{display:flex;flex-direction:column;gap:8px}
+.qopt{padding:13px 16px;border:1.5px solid var(--vb);border-radius:4px;font-size:16px;cursor:pointer;transition:all .15s;background:var(--white);color:var(--text);text-align:left;line-height:1.5}
 .qopt:hover{border-color:var(--v2);background:var(--vl)}
 .qopt.ok{background:#eaf4ee;border-color:var(--green);color:var(--green)}
 .qopt.no{background:#f8eaea;border-color:var(--red);color:var(--red)}
-.qfb{font-size:17px;margin-top:7px;padding:9px 12px;border-radius:3px;line-height:1.55}
+.qfb{font-size:15px;margin-top:12px;padding:13px 16px;border-radius:4px;line-height:1.6}
 .qfb.ok{background:#eaf4ee;color:var(--green);border:1px solid #8acc9a}
 .qfb.no{background:#f8eaea;color:var(--red);border:1px solid #d08080}
-.qnx{margin-top:7px;width:100%}
-.sbox{text-align:center;padding:22px 13px}
-.sbox .big{font-size:48px;font-weight:700;color:var(--v1)}
-.sbox .pct{font-size:16px;color:var(--v2);font-weight:700;margin-top:4px}
-.sbox p{font-size:17px;color:var(--sub);margin-top:7px;line-height:1.6}
+.qnx{margin-top:12px;width:100%;padding:10px;font-size:16px}
+.sbox{text-align:center;padding:40px 28px}
+.sbox .big{font-size:64px;font-weight:700;color:var(--v1)}
+.sbox .pct{font-size:20px;color:var(--v2);font-weight:700;margin-top:6px}
+.sbox p{font-size:16px;color:var(--sub);margin-top:12px;line-height:1.7;max-width:520px;margin-left:auto;margin-right:auto}
+.quiz-header{background:var(--v1);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between}
+.quiz-header .qlbl{font-size:13px;font-weight:700;color:var(--vb);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+.quiz-header h3{font-size:17px;font-weight:700}
+.quiz-header .qcount{font-size:14px;color:var(--vb)}
 
 /* POSTULADO steps */
 .stbox{background:var(--vl);border:1px solid var(--vb);border-radius:3px;padding:10px 12px;margin-bottom:6px;font-size:17px;color:var(--sub);line-height:1.6;cursor:pointer;transition:border-color .2s}
@@ -150,7 +156,20 @@ let tab=0,af=null,st={};
 
 function resize(){const p=cv.parentElement;cv.width=p.clientWidth;cv.height=p.clientHeight-2;draw();}
 window.addEventListener('resize',resize);
-function sw(i){tab=i;document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',i===j));if(af){cancelAnimationFrame(af);af=null;}cv.onmousedown=cv.onmousemove=cv.onmouseup=cv.onclick=null;st={};buildSide();draw();}
+function sw(i){
+  tab=i;
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',i===j));
+  if(af){cancelAnimationFrame(af);af=null;}
+  cv.onmousedown=cv.onmousemove=cv.onmouseup=cv.onclick=null;
+  st={};
+  // quiz tab: hide canvas, expand side to full width
+  const cpanel=document.querySelector('.cpanel');
+  const side=document.getElementById('side');
+  if(i===4){cpanel.classList.add('hidden');side.classList.add('fullwidth');}
+  else{cpanel.classList.remove('hidden');side.classList.remove('fullwidth');}
+  buildSide();
+  if(i!==4) draw();
+}
 function draw(){if(tab===0)dPunto();else if(tab===1)dLinea();else if(tab===2)dPlano();else if(tab===3)dPost();else dQcv();}
 
 function grid(s,c){const W=cv.width,H=cv.height;s=s||50;ctx.strokeStyle=c||'#eeedfe';ctx.lineWidth=0.7;for(let x=0;x<W;x+=s){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<H;y+=s){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}}
@@ -191,22 +210,24 @@ function bPunto(){
     '¿En qué nivel escolar es apropiado introducir la definición euclidiana formal?'
   ])}
   <div class="slbl">Visualización didáctica</div>
-  <div class="cwrap">
+  <div class="cwrap" style="display:flex;flex-direction:column;gap:10px;">
     <div class="brow">
       <button class="btn on" id="bpa" onclick="tAnim('pu')">⏸ Animación</button>
       <button class="btn clr sm" onclick="st.pts=[];draw()">✕ Limpiar</button>
     </div>
-    <label>Radio visual <span class="vv" id="szv">6</span> px &nbsp;<span style="font-size:15px;color:var(--muted)">(tamaño real = 0)</span></label>
-    <input type="range" id="szr" min="2" max="18" value="6" oninput="document.getElementById('szv').textContent=this.value;if(!st.an)dPunto()">
-    <p style="font-size:16px;color:var(--sub);margin-bottom:7px">Haz clic en el lienzo para registrar puntos y ver sus coordenadas.</p>
-    <div class="pbox" id="ptinfo"><b>Sin puntos aún.</b><br>Haz clic en el lienzo.</div>
+    <div>
+      <label>Radio visual <span class="vv" id="szv">6</span> px &nbsp;<span style="font-size:13px;color:var(--muted)">(tamaño real = 0)</span></label>
+      <input type="range" id="szr" min="2" max="18" value="6" oninput="document.getElementById('szv').textContent=this.value;if(!st.an)dPunto()">
+    </div>
+    <p style="font-size:15px;color:var(--sub);line-height:1.6;">Haz clic en el lienzo para registrar puntos y observar sus coordenadas.</p>
+    <div class="pbox" id="ptinfo" style="line-height:1.8;"><b>Sin puntos aún.</b><br>Haz clic en el lienzo.</div>
   </div>
   <div class="div"></div>
   <div class="slbl">Análisis curricular</div>
-  <div class="cwrap">
-    <div class="blk"><div class="bt">Bases Curriculares (5° básico)</div><div class="bb">El punto se introduce como noción intuitiva, sin definición formal. Referencia: ubicación en el plano.</div></div>
-    <div class="blk warn"><div class="bt">Error frecuente en estudiantes</div><div class="bb">Confundir el "punto" geométrico (sin extensión) con el "punto" físico dibujado en papel (que sí ocupa espacio).</div></div>
-    <div class="blk example"><div class="bt">Propiedades clave</div><div class="bb"><b>Dimensión:</b> 0 &nbsp;|&nbsp; <b>Extensión:</b> ninguna<br><b>Define:</b> posición exacta en el espacio</div></div>
+  <div class="cwrap" style="display:flex;flex-direction:column;gap:10px;">
+    <div class="blk"><div class="bt">Bases Curriculares (5° básico)</div><div class="bb" style="line-height:1.8;">El punto se introduce como noción intuitiva, sin definición formal. Referencia: ubicación en el plano.</div></div>
+    <div class="blk warn"><div class="bt">Error frecuente en estudiantes</div><div class="bb" style="line-height:1.8;">Confundir el "punto" geométrico (sin extensión) con el "punto" físico dibujado en papel (que sí ocupa espacio).</div></div>
+    <div class="blk example"><div class="bt">Propiedades clave</div><div class="bb" style="line-height:1.8;"><b>Dimensión:</b> 0 &nbsp;|&nbsp; <b>Extensión:</b> ninguna<br><b>Define:</b> posición exacta en el espacio</div></div>
   </div>`;
   st.pts=[];st.an=true;st.t=0;cv.onclick=ePunto;aLoop('pu');
 }
@@ -392,20 +413,22 @@ function bPost(){
     '¿Qué implica pedagógicamente que existan geometrías no euclidianas donde el V Postulado no se cumple?'
   ])}
   <div class="slbl">Exploración didáctica</div>
-  <div class="cwrap">
+  <div class="cwrap" style="display:flex;flex-direction:column;gap:10px;">
     <div class="brow">
       <button class="btn on" id="ps0" onclick="sPS(0)">Enunciado</button>
       <button class="btn"    id="ps1" onclick="sPS(1)">Paralelas</button>
       <button class="btn"    id="ps2" onclick="sPS(2)">Convergentes</button>
       <button class="btn"    id="ps3" onclick="sPS(3)">Explorar</button>
     </div>
-    <label>Ángulo α = <span class="vv" id="angv">30</span>°</label>
-    <input type="range" id="angr" min="5" max="85" value="30" oninput="onAng()">
-    <div class="pbox" id="anginfo"></div>
+    <div>
+      <label>Ángulo α = <span class="vv" id="angv">30</span>°</label>
+      <input type="range" id="angr" min="5" max="85" value="30" oninput="onAng()">
+    </div>
+    <div class="pbox" id="anginfo" style="line-height:1.8;"></div>
   </div>
   <div class="div"></div>
   <div class="slbl">Secuencia didáctica recomendada</div>
-  <div class="cwrap">
+  <div class="cwrap" style="display:flex;flex-direction:column;gap:8px;">
     <div class="stbox ast" id="sd0" onclick="sPS(0)"><b>1. Enunciado original</b>Lee el postulado y visualiza transversal, ángulos y rectas.</div>
     <div class="stbox" id="sd1" onclick="sPS(1)"><b>2. Caso paralelas</b>Ángulos interiores suman 180° → rectas no se cortan.</div>
     <div class="stbox" id="sd2" onclick="sPS(2)"><b>3. Caso convergente</b>Suma menor que 180° → rectas se cortan.</div>
@@ -512,28 +535,49 @@ const QS=[
 ];
 let qs={q:0,sc:0,dn:false};
 function bQuiz(){qs={q:0,sc:0,dn:false};rQ();}
-function dQcv(){
-  const W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#fafafe';ctx.fillRect(0,0,W,H);grid(60,'#eeedfe');
-  ctx.font='bold 120px Segoe UI';ctx.fillStyle=V2+'0d';ctx.fillText('?',W/2-50,H/2+36);
-  ctx.font='15px Segoe UI';ctx.fillStyle=MU;ctx.fillText('Evaluación con enfoque CPC — responde en el panel →',W/2-165,H/2+80);
-}
+function dQcv(){/* canvas hidden in quiz tab */}
 function rQ(){
   const s=document.getElementById('side');
   if(qs.q>=QS.length){
     const p=Math.round(qs.sc/QS.length*100);
     const m=p>=80?'Excelente comprensión del CPC en geometría.':p>=60?'Buen avance. Revisa los aspectos didácticos.':'Profundiza en la relación entre saber disciplinar y saber didáctico.';
-    s.innerHTML=`<div class="dbox"><div class="dlbl">Evaluación CPC — Resultado</div><h3>Evaluación completada</h3></div>
-    <div class="sbox"><div class="big">${qs.sc}/${QS.length}</div><div class="pct">${p}%</div><p>${m}</p></div>
-    <div style="padding:0 13px"><button class="btn" style="width:100%;margin-top:8px" onclick="bQuiz();dQcv()">↺ Reintentar</button></div>`;return;
+    s.innerHTML=`
+    <div class="quiz-header">
+      <div><div class="qlbl">Evaluación CPC</div><h3>Evaluación completada</h3></div>
+    </div>
+    <div class="sbox">
+      <div class="big">${qs.sc}/${QS.length}</div>
+      <div class="pct">${p}% de respuestas correctas</div>
+      <p>${m}</p>
+      <button class="btn on" style="margin-top:20px;padding:12px 32px;font-size:16px" onclick="bQuiz()">↺ Reintentar evaluación</button>
+    </div>`;
+    return;
   }
   const q=QS[qs.q],pc=Math.round(qs.q/QS.length*100);
-  s.innerHTML=`<div class="dbox" style="padding:10px 15px"><div class="dlbl">Evaluación CPC — Pregunta ${qs.q+1} de ${QS.length}</div></div>
-  <div style="padding:9px 13px 4px"><div class="pbar"><div class="pfill" style="width:${pc}%"></div></div></div>
-  <div class="qwrap"><div class="qq">${q.q}</div>
-  <div class="qopts">${q.o.map((o,i)=>`<button class="qopt" id="qo${i}" onclick="aQ(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>
-  <div id="qfb"></div><div id="qnx"></div></div>`;
+  s.innerHTML=`
+  <div class="quiz-header">
+    <div><div class="qlbl">Evaluación con enfoque CPC</div><h3>Conocimiento Pedagógico del Contenido — Geometría</h3></div>
+    <div class="qcount">Pregunta ${qs.q+1} de ${QS.length}</div>
+  </div>
+  <div style="padding:14px 28px 4px"><div class="pbar"><div class="pfill" style="width:${pc}%"></div></div></div>
+  <div class="qwrap">
+    <div class="qq">${q.q}</div>
+    <div class="qopts">${q.o.map((o,i)=>`<button class="qopt" id="qo${i}" onclick="aQ(${i})"><b style="color:var(--v2);margin-right:8px">${String.fromCharCode(65+i)}.</b>${o}</button>`).join('')}</div>
+    <div id="qfb"></div>
+    <div id="qnx"></div>
+  </div>`;
 }
-function aQ(i){if(qs.dn)return;qs.dn=true;const q=QS[qs.q],ok=i===q.a;if(ok)qs.sc++;document.querySelectorAll('.qopt').forEach((el,j)=>{el.disabled=true;if(j===q.a)el.classList.add('ok');else if(j===i)el.classList.add('no');});document.getElementById('qfb').innerHTML=`<div class="qfb ${ok?'ok':'no'}">${ok?'✓ '+q.ok:'✗ '+q.no}</div>`;document.getElementById('qnx').innerHTML=`<button class="btn qnx" onclick="nQ()">${qs.q+1<QS.length?'Siguiente →':'Ver resultado'}</button>`;}
+function aQ(i){
+  if(qs.dn)return;qs.dn=true;
+  const q=QS[qs.q],ok=i===q.a;if(ok)qs.sc++;
+  document.querySelectorAll('.qopt').forEach((el,j)=>{
+    el.disabled=true;
+    if(j===q.a)el.classList.add('ok');
+    else if(j===i)el.classList.add('no');
+  });
+  document.getElementById('qfb').innerHTML=`<div class="qfb ${ok?'ok':'no'}">${ok?'✓ '+q.ok:'✗ '+q.no}</div>`;
+  document.getElementById('qnx').innerHTML=`<button class="btn on qnx" onclick="nQ()">${qs.q+1<QS.length?'Siguiente pregunta →':'Ver resultado final'}</button>`;
+}
 function nQ(){qs.q++;qs.dn=false;rQ();}
 
 /* ANIM */
