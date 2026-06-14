@@ -207,7 +207,6 @@ function bPunto(){
     '¿Cómo introduce el texto escolar de 5° básico el concepto de punto? ¿Y el de 7°? ¿Qué diferencias observas?',
     '¿Qué error frecuente cometen los estudiantes al confundir el símbolo gráfico del punto con el objeto geométrico?',
     '¿Cómo explicarías a tus futuros alumnos que el punto "existe" pero no ocupa espacio?',
-    '¿En qué nivel escolar es apropiado introducir la definición euclidiana formal?'
   ])}
   <div class="slbl">Visualización didáctica</div>
   <div class="cwrap" style="display:flex;flex-direction:column;gap:10px;">
@@ -266,7 +265,6 @@ function bLinea(){
   ${cpcHTML('li',[
     '¿Cómo distingue el currículum escolar entre "línea", "recta" y "segmento"? ¿En qué curso aparece cada término?',
     '¿Por qué los estudiantes suelen confundir "línea" con "segmento"? ¿Qué representación favorece esa confusión?',
-    'Diseña una pregunta de aula que obligue a un estudiante de 6° básico a diferenciar los cuatro tipos de línea.',
     '¿Qué dificultades cognitivas aparecen al introducir el concepto de "infinito" en la línea?'
   ])}
   <div class="slbl">Tipo de línea</div>
@@ -326,7 +324,7 @@ function dLinea(){
   }
   ctx.fillStyle='rgba(238,237,254,0.9)';ctx.fillRect(8,H-42,W-16,34);
   ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(8,H-42,W-16,34);
-  ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText('🎓 Para el docente: identificar qué tipo de línea usa cada nivel del currículum',14,H-26);ctx.fillText('   ayuda a planificar la progresión conceptual adecuada.',14,H-12);
+  ctx.font='13px Segoe UI';ctx.fillStyle=V1;ctx.fillText('Para el docente: identificar qué tipo de línea usa cada nivel del currículum',14,H-26);ctx.fillText('   ayuda a planificar la progresión conceptual adecuada.',14,H-12);
 }
 
 /* ════════════════════════════════════════
@@ -342,8 +340,7 @@ function bPlano(){
   ${cpcHTML('pl',[
     '¿Cuándo y cómo introduce el currículum el concepto de plano cartesiano? ¿Qué relación tiene con el concepto de plano geométrico?',
     '¿Qué dificultades tienen los estudiantes para comprender que el plano tiene "espesor cero"?',
-    '¿Cómo relacionarías el concepto de plano con la enseñanza de coordenadas en 6° básico?',
-    'Diseña una situación concreta del entorno que permita introducir el plano en 5° básico.'
+    '¿Cómo relacionarías el concepto de plano con la enseñanza de coordenadas en 7° básico?',
   ])}
   <div class="slbl">Vista</div>
   <div class="cwrap">
@@ -407,7 +404,6 @@ function bPost(){
     <p>Si una transversal corta dos rectas y los ángulos interiores del mismo lado suman menos de 180°, las rectas se cortan de ese lado.</p>
   </div>
   ${cpcHTML('po',[
-    '¿Por qué el V Postulado fue históricamente el más cuestionado de los Elementos de Euclides?',
     '¿Cómo definirías "rectas paralelas" a estudiantes de 5° básico sin usar el lenguaje formal del postulado?',
     'Analiza cómo define "rectas paralelas" el texto escolar de 5°, 6° y 7° básico. ¿Qué diferencias encuentras?',
     '¿Qué implica pedagógicamente que existan geometrías no euclidianas donde el V Postulado no se cumple?'
@@ -463,7 +459,7 @@ function dPost(){
     // label at top
     ctx.fillStyle='rgba(248,247,255,0.93)';ctx.fillRect(8,6,W-16,32);
     ctx.font='bold 14px Segoe UI';ctx.fillStyle=ang===90?GR:RE;
-    ctx.fillText(`α = ${ang}°   β = ${180-ang}°   α + β = 180°   → ${ang===90?'PARALELAS':'SE CORTAN'}`,14,26);
+    ctx.fillText(`α = ${ang}°   β = ${180-ang}°   α + β < 180°   → ${ang===90?'PARALELAS':'SE CORTAN'}`,14,26);
   }
   ctx.fillStyle='rgba(238,237,254,0.9)';ctx.fillRect(8,H-46,W-16,38);ctx.strokeStyle=VB;ctx.lineWidth=1;ctx.strokeRect(8,H-46,W-16,38);
   ctx.font='12px Segoe UI';ctx.fillStyle=V1;
